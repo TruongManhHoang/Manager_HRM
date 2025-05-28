@@ -13,6 +13,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'dart:typed_data';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:universal_html/html.dart' as html;
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -105,6 +109,28 @@ class Sidebar extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          const Icon(Iconsax.document),
+                          const Gap(TSizes.sm),
+                          GestureDetector(
+                            onTap: () {
+                              exportPdfForWeb();
+                            },
+                            child: const Text(
+                              'Xuất báo cáo',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Gap(TSizes.spaceBtwItems),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           const Icon(Iconsax.logout_1),
                           const Gap(TSizes.sm),
                           GestureDetector(
@@ -148,10 +174,60 @@ void _confirmDelete(BuildContext context) {
           child: const Text('Có', style: TextStyle(color: Colors.red)),
           onPressed: () {
             context.read<AuthBloc>().add(LogoutRequested());
-            context.go(RouterName.login);
+            context.go(RouterName.splashScreen);
           },
         ),
       ],
     ),
   );
+}
+
+void exportPdfForWeb() async {
+  final pdf = pw.Document();
+
+  pdf.addPage(
+    pw.Page(
+      build: (context) => pw.Column(
+        children: [
+          pw.Text('BÁO CÁO DANH SÁCH PHÒNG BAN',
+              style:
+                  pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+          pw.SizedBox(height: 10),
+          pw.Text('Thời gian xuất báo cáo: ${DateTime.now()}'),
+          pw.SizedBox(height: 20),
+          pw.Table.fromTextArray(
+            headers: [
+              'STT',
+              'Mã PB',
+              'Tên phòng ban',
+              'Trưởng bộ phận',
+              'Số nhân viên',
+              'Mô tả'
+            ],
+            data: [
+              [
+                '1',
+                'PB001',
+                'Phòng kinh doanh',
+                '(Chưa có)',
+                '1',
+                'Mô tả chi tiết về phòng ban kinh doanh'
+              ],
+              ['2', 'PB002', 'Phòng nhân sự', '(Chưa có)', '0', ''],
+              ['3', 'PB003', 'Ban lãnh đạo', '(Chưa có)', '1', ''],
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+
+  Uint8List bytes = await pdf.save();
+
+  final blob = html.Blob([bytes], 'application/pdf');
+  final url = html.Url.createObjectUrlFromBlob(blob);
+  final anchor = html.AnchorElement(href: url)
+    ..setAttribute("download", "bao_cao_phong_ban.pdf")
+    ..click();
+  html.Url.revokeObjectUrl(url);
 }

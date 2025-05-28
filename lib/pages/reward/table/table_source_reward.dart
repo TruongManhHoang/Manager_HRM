@@ -133,7 +133,7 @@ class RewardTableRows extends DataTableSource {
       builder: (ctx) => AlertDialog(
         title: const Text('Xác nhận xoá'),
         content: Text(
-            'Bạn có chắc chắn muốn xoá khen thưởng của "${reward.employeeId}" không?'),
+            'Bạn có chắc chắn muốn xoá khen thưởng của "${reward.code}" không?'),
         actions: [
           TextButton(
             child: const Text('Huỷ'),

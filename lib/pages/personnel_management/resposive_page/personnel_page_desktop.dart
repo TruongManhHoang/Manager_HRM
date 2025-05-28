@@ -1,7 +1,11 @@
 import 'package:admin_hrm/common/widgets/breadcrumb/t_breadcrums_with_heading.dart';
+import 'package:admin_hrm/common/widgets/method/method.dart';
+import 'package:admin_hrm/pages/department/bloc/department_bloc.dart';
+import 'package:admin_hrm/pages/personnel_management/bloc/persional_bloc.dart';
 import 'package:admin_hrm/pages/personnel_management/table/data_table_personnel.dart';
 import 'package:admin_hrm/router/routers_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,7 +14,6 @@ class EmployeePageDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         body: SingleChildScrollView(
       child: Container(
@@ -58,18 +61,61 @@ class EmployeePageDesktop extends StatelessWidget {
                                   .copyWith(color: Colors.white),
                             )),
                         const Gap(10),
-                        TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                            ),
-                            onPressed: () {},
-                            child: Text(
-                              'Xuất danh sách nhân viên',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: Colors.white),
-                            )),
+                        BlocBuilder<PersionalBloc, PersionalState>(
+                            builder: (context, state) {
+                          if (state.personnel != null) {
+                            return TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                ),
+                                onPressed: () {
+                                  exportDynamicExcel(
+                                    fileName: 'Danh_sach_nhan_vien',
+                                    headers: [
+                                      'ID',
+                                      'Mã nhân viên',
+                                      'Tên nhân viên',
+                                      'Avatar',
+                                      'Ngày sinh',
+                                      'Số điện thoại',
+                                      'Địa chỉ',
+                                      'Email',
+                                      'Giới tính',
+                                      'ID phòng ban',
+                                      'ID chức vụ',
+                                      'Trạng thái',
+                                      'Cập nhật lần cuối',
+                                    ],
+                                    dataRows: state.personnel!
+                                        .map((dept) => [
+                                              dept.id ?? '',
+                                              dept.code ?? '',
+                                              dept.name ?? '',
+                                              dept.avatar ?? '',
+                                              dept.dateOfBirth ?? '',
+                                              dept.phone ?? '',
+                                              dept.address ?? '',
+                                              dept.email ?? '',
+                                              dept.gender ?? '',
+                                              dept.departmentId ?? '',
+                                              dept.positionId ?? '',
+                                              dept.status ?? '',
+                                              dept.updatedAt ?? '',
+                                            ])
+                                        .toList(),
+                                  );
+                                },
+                                child: Text(
+                                  'Xuất danh sách nhân viên',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(color: Colors.white),
+                                ));
+                          } else {
+                            return const SizedBox();
+                          }
+                        }),
                         const Gap(10),
                         TextButton(
                             style: TextButton.styleFrom(

@@ -341,7 +341,7 @@ class _AddSalaryPageState extends State<AddSalaryPage> {
                                           Expanded(
                                             child: TextButton(
                                               style: TextButton.styleFrom(
-                                                backgroundColor: Colors.blue,
+                                                backgroundColor: Colors.red,
                                                 padding:
                                                     const EdgeInsets.symmetric(
                                                   horizontal:

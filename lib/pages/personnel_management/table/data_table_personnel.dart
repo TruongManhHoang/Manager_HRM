@@ -135,20 +135,20 @@ class DataTableEmployee extends StatelessWidget {
                           softWrap: true,
                           textAlign: TextAlign.center,
                           style: baseStyle))),
-              DataColumn2(
-                  label: Center(
-                      child: Text('Ngày bắt đầu',
-                          maxLines: 2,
-                          softWrap: true,
-                          textAlign: TextAlign.center,
-                          style: baseStyle))),
-              DataColumn2(
-                  label: Center(
-                      child: Text('Trạng thái',
-                          maxLines: 2,
-                          softWrap: true,
-                          textAlign: TextAlign.center,
-                          style: baseStyle))),
+              // DataColumn2(
+              //     label: Center(
+              //         child: Text('Ngày bắt đầu',
+              //             maxLines: 2,
+              //             softWrap: true,
+              //             textAlign: TextAlign.center,
+              //             style: baseStyle))),
+              // DataColumn2(
+              //     label: Center(
+              //         child: Text('Trạng thái',
+              //             maxLines: 2,
+              //             softWrap: true,
+              //             textAlign: TextAlign.center,
+              //             style: baseStyle))),
               DataColumn2(
                   label: Center(
                       child: Text('Chức năng khác',

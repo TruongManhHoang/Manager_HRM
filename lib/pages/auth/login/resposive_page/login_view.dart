@@ -118,9 +118,7 @@ class _LoginViewState extends State<LoginView> {
                             ));
                       }
                     },
-                    child: state is AuthLoading
-                        ? const CircularProgressIndicator()
-                        : const Text("Đăng nhập"),
+                    child: const Text("Đăng nhập"),
                   ),
                   const SizedBox(height: 40),
                 ],
