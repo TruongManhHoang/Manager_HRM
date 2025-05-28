@@ -57,11 +57,11 @@ class SidebarUser extends StatelessWidget {
                     // Menu items
 
                     const MenuItem(
-                        icon: Iconsax.profile,
+                        icon: Iconsax.profile_2user,
                         title: 'Thông tin nhân viên',
                         router: RouterName.employeeDetailUserPage),
                     const MenuItem(
-                        icon: Iconsax.profile,
+                        icon: Iconsax.wallet,
                         title: 'Bảng lương',
                         router: RouterName.employeeSalaryPage),
                     Padding(
@@ -112,7 +112,7 @@ void _confirmDelete(BuildContext context) {
           child: const Text('Có', style: TextStyle(color: Colors.red)),
           onPressed: () {
             context.read<AuthBloc>().add(LogoutRequested());
-            context.go(RouterName.login);
+            context.go(RouterName.splashScreen);
           },
         ),
       ],

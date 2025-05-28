@@ -128,7 +128,7 @@ class TablePositionRows extends DataTableSource {
       builder: (ctx) => AlertDialog(
         title: const Text('Xác nhận xoá'),
         content: Text(
-            'Bạn có chắc chắn muốn xoá phòng ban "${positionModel.name}" không?'),
+            'Bạn có chắc chắn muốn xoá chức vụ "${positionModel.code}" không?'),
         actions: [
           TextButton(
             child: const Text('Huỷ'),

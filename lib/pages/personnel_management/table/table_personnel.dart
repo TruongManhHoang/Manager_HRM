@@ -37,7 +37,6 @@ class TableEmployeeRows extends DataTableSource {
     final dateFormat = DateFormat('dd/MM/yyyy');
     if (index >= personnel.length) return null;
     final employee = personnel[index];
-    debugPrint("employee avatar: ${employee.avatar}");
     return DataRow2(
       specificRowHeight: 100,
       cells: [
@@ -121,28 +120,28 @@ class TableEmployeeRows extends DataTableSource {
                 .copyWith(color: TColors.textPrimary),
           ),
         )),
-        DataCell(Padding(
-          padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
-          child: Center(
-            child: Text(employee.date, style: baseStyle),
-          ),
-        )),
-        DataCell(
-          TRoundedContainer(
-            radius: TSizes.cardRadiusSm,
-            padding: const EdgeInsets.symmetric(
-              vertical: TSizes.xs,
-              horizontal: TSizes.md,
-            ),
-            child: Text(
-              employee.status.toString(),
-              style: baseStyle.copyWith(
-                color:
-                    THelperFunctions.getContractStatusColor(employee.status!),
-              ),
-            ),
-          ),
-        ),
+        // DataCell(Padding(
+        //   padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+        //   child: Center(
+        //     child: Text(employee.date, style: baseStyle),
+        //   ),
+        // )),
+        // DataCell(
+        //   TRoundedContainer(
+        //     radius: TSizes.cardRadiusSm,
+        //     padding: const EdgeInsets.symmetric(
+        //       vertical: TSizes.xs,
+        //       horizontal: TSizes.md,
+        //     ),
+        //     child: Text(
+        //       employee.status.toString(),
+        //       style: baseStyle.copyWith(
+        //         color:
+        //             THelperFunctions.getContractStatusColor(employee.status!),
+        //       ),
+        //     ),
+        //   ),
+        // ),
         DataCell(Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -155,7 +154,6 @@ class TableEmployeeRows extends DataTableSource {
                 icon: const Icon(Iconsax.eye),
                 color: TColors.primary,
               ),
-              const Gap(TSizes.xs),
               IconButton(
                 onPressed: () {
                   context.go(RouterName.updateEmployee, extra: employee);
@@ -163,7 +161,6 @@ class TableEmployeeRows extends DataTableSource {
                 icon: const Icon(Icons.edit),
                 color: TColors.primary,
               ),
-              const SizedBox(width: TSizes.xs),
               IconButton(
                 onPressed: () {
                   _confirmDelete(context, employee);

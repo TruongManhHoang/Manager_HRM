@@ -46,7 +46,7 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
     codeController.text = widget.employee.code!;
     fullNameController.text = widget.employee.name;
     genderController.text = widget.employee.gender;
-    addressController.text = widget.employee.avatar!;
+    avatarController.text = widget.employee.avatar!;
     positionController.text = widget.employee.positionId.toString();
     departmentController.text = widget.employee.departmentId.toString();
     phoneController.text = widget.employee.phone;
@@ -134,20 +134,10 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                                       Image.network(
                                         avatarController.text,
                                         // width: 100,
-                                        // height: 200,
-                                        loadingBuilder:
-                                            (context, child, loadingProgress) {
-                                          if (loadingProgress == null)
-                                            return child;
-                                          return Center(
-                                              child:
-                                                  CircularProgressIndicator());
-                                        },
+                                        height: 300,
                                         errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Text(
-                                              '❌ Lỗi khi tải ảnh: $error');
-                                        },
+                                            (context, error, stackTrace) =>
+                                                Icon(Icons.person, size: 100),
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(

@@ -114,8 +114,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           final appUser = await userRepository.fetchUserProfile();
 
           emit(AuthSuccess(appUser));
-        } else {
-          emit(AuthFailure("Chưa đăng nhập"));
         }
       } catch (e) {
         emit(AuthFailure("Lỗi load user: ${e.toString()}"));

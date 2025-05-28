@@ -137,7 +137,7 @@ class _DataTableSalaryEmployeeState extends State<DataTableSalaryEmployee> {
             ),
           );
         } else {
-          return const Center(child: Text('No data available'));
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );
