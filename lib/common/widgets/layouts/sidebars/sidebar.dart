@@ -103,29 +103,33 @@ class Sidebar extends StatelessWidget {
                         icon: Iconsax.chart_2,
                         title: 'KPI',
                         router: RouterName.kpiPage),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(Iconsax.document),
-                          const Gap(TSizes.sm),
-                          GestureDetector(
-                            onTap: () {
-                              exportPdfForWeb();
-                            },
-                            child: const Text(
-                              'Xuất báo cáo',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Gap(TSizes.spaceBtwItems),
+                    const MenuItem(
+                        icon: Iconsax.document1,
+                        title: 'Xuất báo cáo',
+                        router: RouterName.reportPage),
+                    const Gap(TSizes.spaceBtwItems),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 25),
+                    //   child: Row(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       const Icon(Iconsax.document1),
+                    //       const Gap(TSizes.sm),
+                    //       GestureDetector(
+                    //         onTap: () {
+                    //           exportPdfForWeb();
+                    //         },
+                    //         child: const Text(
+                    //           'Xuất báo cáo',
+                    //           style: TextStyle(
+                    //             fontSize: 16,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    const Gap(TSizes.spaceBtwItems),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: Row(
@@ -184,7 +188,9 @@ void _confirmDelete(BuildContext context) {
 
 void exportPdfForWeb() async {
   final pdf = pw.Document();
-
+  final globalStorage = getIt<GlobalStorage>();
+  final positions = globalStorage.positions;
+  final departments = globalStorage.departments;
   pdf.addPage(
     pw.Page(
       build: (context) => pw.Column(
@@ -196,27 +202,16 @@ void exportPdfForWeb() async {
           pw.Text('Thời gian xuất báo cáo: ${DateTime.now()}'),
           pw.SizedBox(height: 20),
           pw.Table.fromTextArray(
-            headers: [
-              'STT',
-              'Mã PB',
-              'Tên phòng ban',
-              'Trưởng bộ phận',
-              'Số nhân viên',
-              'Mô tả'
-            ],
-            data: [
-              [
-                '1',
-                'PB001',
-                'Phòng kinh doanh',
-                '(Chưa có)',
-                '1',
-                'Mô tả chi tiết về phòng ban kinh doanh'
-              ],
-              ['2', 'PB002', 'Phòng nhân sự', '(Chưa có)', '0', ''],
-              ['3', 'PB003', 'Ban lãnh đạo', '(Chưa có)', '1', ''],
-            ],
-          ),
+              headers: ['STT', 'Mã PB', 'Tên phòng ban', 'Mô tả'],
+              data: List.generate(
+                departments!.length,
+                (index) => [
+                  index + 1,
+                  departments[index].code,
+                  departments[index].name,
+                  departments[index].description ?? 'Không có mô tả',
+                ],
+              )),
         ],
       ),
     ),
