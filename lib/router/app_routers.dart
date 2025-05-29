@@ -64,6 +64,7 @@ import 'package:admin_hrm/pages/position/bloc/position_bloc.dart';
 import 'package:admin_hrm/pages/position/edit_postion/edit_position.dart';
 import 'package:admin_hrm/pages/position/position_page.dart';
 import 'package:admin_hrm/pages/position/add_position/add_position.dart';
+import 'package:admin_hrm/pages/report/report_page.dart';
 
 import 'package:admin_hrm/pages/reward/add_reward/add_reward_page.dart';
 import 'package:admin_hrm/pages/reward/bloc/reward_bloc.dart';
@@ -453,6 +454,7 @@ class AppRouter {
               return BlocProvider(
                 create: (context) => SalaryBloc(
                   salaryRepository: getIt<SalaryRepository>(),
+                  globalStorage: getIt<GlobalStorage>(),
                 )..add(GetListSalary()),
                 child: Scaffold(
                   body: child,
@@ -535,6 +537,14 @@ class AppRouter {
                     ),
                   ]),
             ]),
+
+        GoRoute(
+          path: RouterName.reportPage,
+          name: RouterName.reportPage,
+          builder: (context, state) {
+            return const ReportPage();
+          },
+        ),
         ShellRoute(
             builder: (context, state, child) {
               return BlocProvider(

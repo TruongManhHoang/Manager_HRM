@@ -1,5 +1,6 @@
 import 'package:admin_hrm/data/model/salary/salary_model.dart';
 import 'package:admin_hrm/data/repository/salary_repository.dart';
+import 'package:admin_hrm/local/hive_storage.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,10 @@ part 'salary_state.dart';
 
 class SalaryBloc extends Bloc<SalaryEvent, SalaryState> {
   final SalaryRepository salaryRepository;
+  final GlobalStorage globalStorage;
 
-  SalaryBloc({required this.salaryRepository}) : super(SalaryInitial()) {
+  SalaryBloc({required this.salaryRepository, required this.globalStorage})
+      : super(SalaryInitial()) {
     on<CreateSalary>(_onCreateSalary);
     on<GetListSalary>(_onGetListSalary);
     on<UpdateSalary>(_onUpdateSalary);
@@ -41,6 +44,7 @@ class SalaryBloc extends Bloc<SalaryEvent, SalaryState> {
     try {
       final salaries = await salaryRepository.getSalaries();
       emit(SalaryLoaded(salaries));
+      globalStorage.fetchAllSalary(salaries);
     } catch (e) {
       emit(SalaryFailure(e.toString()));
     }

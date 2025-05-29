@@ -8,6 +8,7 @@ import 'package:admin_hrm/data/model/kpi/kpi_model.dart';
 import 'package:admin_hrm/data/model/personnel_management.dart';
 import 'package:admin_hrm/data/model/position/position_model.dart';
 import 'package:admin_hrm/data/model/reward/reward_model.dart';
+import 'package:admin_hrm/data/model/salary/salary_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -33,6 +34,7 @@ class GlobalStorageKey {
   static const kpis = "kpis";
   static const personalModel = "personalModel";
   static const password = "password";
+  static const salaries = "salaries";
 }
 
 abstract class GlobalStorage {
@@ -76,6 +78,9 @@ abstract class GlobalStorage {
 
   List<KPIModel>? get kpis;
   Future<void> fetchAllKpis(List<KPIModel> kpis);
+
+  List<SalaryModel>? get salaries;
+  Future<void> fetchAllSalary(List<SalaryModel> salaries);
 
   // New authentication methods
   String? get accessToken;
@@ -543,4 +548,19 @@ class GlobalStorageImpl implements GlobalStorage {
   @override
   // TODO: implement password
   String? get password => _box.get(GlobalStorageKey.password);
+
+  @override
+  Future<void> fetchAllSalary(List<SalaryModel> salaries) {
+    return _box.put(
+      GlobalStorageKey.salaries,
+      salaries.map((e) => e.toJson()).toList(),
+    );
+  }
+
+  @override
+  // TODO: implement salaries
+  List<SalaryModel>? get salaries => _box
+      .get(GlobalStorageKey.salaries, defaultValue: [])
+      .map((e) => SalaryModel.fromJson(Map<String, dynamic>.from(e)))
+      .toList();
 }

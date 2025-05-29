@@ -343,6 +343,8 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                                                       dateOfBirth:
                                                           birthDateController
                                                               .text,
+                                                      avatar:
+                                                          avatarController.text,
                                                       gender:
                                                           genderController.text,
                                                       positionId:
