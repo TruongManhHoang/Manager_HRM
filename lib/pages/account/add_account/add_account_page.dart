@@ -13,6 +13,7 @@ import 'package:admin_hrm/pages/auth/bloc/auth_event.dart';
 import 'package:admin_hrm/pages/auth/bloc/auth_state.dart';
 
 import 'package:admin_hrm/router/routers_name.dart';
+import 'package:admin_hrm/utils/validators/validation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,7 +41,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
   final passwordController = TextEditingController();
   final roleController = TextEditingController();
   final statusController = TextEditingController();
-
+  bool _obscureOldPassword = true;
   @override
   void initState() {
     super.initState();
@@ -50,6 +51,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
       selectedPersonalId = first.id;
       personalIdController.text = first.id!;
       emailController.text = first.email ?? '';
+      nameController.text = first.name ?? '';
     }
   }
 
@@ -87,7 +89,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
                           child: Column(
                             children: [
                               const TBreadcrumsWithHeading(
-                                heading: 'Thêm tài khoản',
+                                heading: 'Tài khoản',
                                 breadcrumbItems: [RouterName.addAccount],
                               ),
                               Container(
@@ -146,6 +148,8 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                                         (e) => e.id == value);
                                                 emailController.text =
                                                     selected.email ?? '';
+                                                nameController.text =
+                                                    selected.name ?? '';
                                               });
                                             },
                                             hintText: 'Chọn nhân viên',
@@ -172,8 +176,23 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                         text: 'Mật khẩu',
                                         hint: 'Nhập mật khẩu',
                                         controller: passwordController,
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            _obscureOldPassword
+                                                ? Icons.visibility_off
+                                                : Icons.visibility,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _obscureOldPassword =
+                                                  !_obscureOldPassword;
+                                            });
+                                          },
+                                        ),
+                                        obscureText: _obscureOldPassword,
                                         keyboardType:
                                             TextInputType.visiblePassword,
+                                        validator: TValidator.validatePassword,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(
@@ -181,6 +200,9 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                         text: 'Role',
                                         hint: 'Nhập role',
                                         controller: roleController,
+                                        validator: (value) =>
+                                            TValidator.validateEmptyText(
+                                                'Role', value),
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TDropDownMenu(

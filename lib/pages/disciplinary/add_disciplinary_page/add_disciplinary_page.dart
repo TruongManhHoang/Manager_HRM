@@ -178,6 +178,7 @@ class AddDisciplinaryPage extends StatelessWidget {
                                               hint: 'Nhập giá trị kỷ luật',
                                               controller:
                                                   disciplinaryValueController,
+                                              isFormatted: true,
                                               keyboardType:
                                                   TextInputType.number,
                                             ),

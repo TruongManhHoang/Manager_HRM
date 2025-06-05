@@ -21,6 +21,23 @@ class GetListSalary extends SalaryEvent {
   List<Object?> get props => [];
 }
 
+class QuerySalary extends SalaryEvent {
+  final String query;
+
+  QuerySalary(this.query);
+
+  @override
+  List<Object?> get props => [query];
+}
+
+class FilterSalaryEvent extends SalaryEvent {
+  final String selectedMonth;
+  FilterSalaryEvent(this.selectedMonth);
+
+  @override
+  List<Object?> get props => [selectedMonth];
+}
+
 class GetListSalaryByEmployeeId extends SalaryEvent {
   final String employeeId;
 

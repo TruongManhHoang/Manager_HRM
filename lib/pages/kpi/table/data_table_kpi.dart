@@ -1,3 +1,4 @@
+import 'package:admin_hrm/constants/colors.dart';
 import 'package:admin_hrm/pages/kpi/bloc/kpi_bloc.dart';
 import 'package:admin_hrm/pages/kpi/bloc/kpi_state.dart';
 import 'package:admin_hrm/pages/kpi/table/table_source_kpi.dart';
@@ -13,111 +14,131 @@ class DataTableKPI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle baseStyle = Theme.of(context).textTheme.titleMedium!.copyWith(
+          color: TColors.dark,
+        );
     return BlocBuilder<KPIBloc, KPIState>(
       builder: (context, state) {
         if (state is KPILoading) {
           return const Center(child: CircularProgressIndicator());
+        } else if (state is KPILoaded && state.kpis.isEmpty) {
+          return const Center(
+            child: Text(
+              'Không có dữ liệu KPI.',
+              style: TextStyle(fontSize: 16, color: Colors.red),
+            ),
+          );
         } else if (state is KPILoaded) {
           return TPaginatedDataTable(
             minWidth: 700,
             tableHeight: 500,
             dataRowHeight: TSizes.xl * 1.45,
-            columns: const [
+            columns: [
               DataColumn2(
-                label: Center(
-                  child: Text(
-                    'Mã nhân sự',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                  child: Center(
+                    child: Text('STT',
+                        maxLines: 2,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: baseStyle),
                   ),
                 ),
               ),
               DataColumn2(
-                label: Center(
-                  child: Text(
-                    'Phòng ban',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                  child: Center(
+                    child: Text('Tên nhân viên',
+                        maxLines: 2,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: baseStyle),
                   ),
                 ),
               ),
               DataColumn2(
-                label: Center(
-                  child: Text(
-                    'Tháng',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                  child: Center(
+                    child: Text('Nội dung KPI',
+                        maxLines: 2,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: baseStyle),
                   ),
                 ),
               ),
               DataColumn2(
-                label: Center(
-                  child: Text(
-                    'Tổng điểm',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                  child: Center(
+                    child: Text('Phòng ban',
+                        maxLines: 2,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: baseStyle),
                   ),
                 ),
               ),
               DataColumn2(
-                label: Center(
-                  child: Text(
-                    'Người đánh giá',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                  child: Center(
+                    child: Text('Giá trị KPI',
+                        maxLines: 2,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: baseStyle),
                   ),
                 ),
               ),
               DataColumn2(
-                label: Center(
-                  child: Text(
-                    'Ghi chú',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                  child: Center(
+                    child: Text('Người đánh giá',
+                        maxLines: 2,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: baseStyle),
                   ),
                 ),
               ),
               DataColumn2(
-                label: Center(
-                  child: Text(
-                    'Hành động',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                  child: Center(
+                    child: Text('Ghi chú',
+                        maxLines: 2,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: baseStyle),
+                  ),
+                ),
+              ),
+              DataColumn2(
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                  child: Center(
+                    child: Text('Ngày tạo',
+                        maxLines: 2,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: baseStyle),
+                  ),
+                ),
+              ),
+              DataColumn2(
+                label: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+                  child: Center(
+                    child: Text('Hành động',
+                        maxLines: 2,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: baseStyle),
                   ),
                 ),
               ),
@@ -128,10 +149,11 @@ class DataTableKPI extends StatelessWidget {
             ),
           );
         } else
-          return Center(
+          // ignore: curly_braces_in_flow_control_structures
+          return const Center(
             child: Text(
               'Không có dữ liệu',
-              style: const TextStyle(color: Colors.red),
+              style: TextStyle(color: Colors.red),
             ),
           );
       },

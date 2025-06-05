@@ -41,21 +41,22 @@ class SalaryPageMobile extends StatelessWidget {
                 child: Column(
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         TextButton(
                             style: TextButton.styleFrom(
                               backgroundColor: Colors.blue,
+                              minimumSize: const Size(150, 50),
                             ),
                             onPressed: () {
-                              context.go(RouterName.addSalary);
+                              context.push(RouterName.addSalary);
                             },
                             child: Text(
                               'Thêm Lương',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
-                                  .copyWith(color: Colors.white),
+                                  .copyWith(color: Colors.white, fontSize: 16),
                             )),
                         const Gap(10),
                         BlocBuilder<SalaryBloc, SalaryState>(
@@ -64,27 +65,36 @@ class SalaryPageMobile extends StatelessWidget {
                             return TextButton(
                                 style: TextButton.styleFrom(
                                   backgroundColor: Colors.blue,
+                                  minimumSize: const Size(150, 50),
                                 ),
                                 onPressed: () {
                                   exportDynamicExcel(
+                                    fileName: 'Danh_sach_luong',
                                     headers: [
-                                      'Mã phòng ban',
-                                      'Tên phòng ban',
-                                      'Người quản lý',
-                                      'Mô tả',
-                                      'Trạng thái',
-                                      'Số lượng nhân viên',
-                                      'Email',
-                                      'Số điện thoại',
+                                      'Mã bảng lương',
+                                      'Mã nhân viên',
+                                      'Số ngày chấm công',
+                                      'số tiền kỷ luật',
+                                      'Tiền thưởng KPI',
+                                      'Tiền khen thưởng',
+                                      'Lương cơ bản',
+                                      'Tổng lương thực lĩnh',
+                                      'Người duyệt',
+                                      'Ngày tạo bảng lương',
                                     ],
                                     dataRows: state.salaries
                                         .map((salary) => [
                                               salary.id ?? '',
                                               salary.employeeId ?? '',
                                               salary.attendanceBonus ?? '',
-                                              salary.approvedBy ?? '',
                                               salary.disciplinaryDeduction ??
                                                   '',
+                                              salary.kpiBonus ?? '',
+                                              salary.rewardBonus ?? '',
+                                              salary.baseSalary ?? '',
+                                              salary.totalSalary ?? '',
+                                              salary.approvedBy ?? '',
+                                              salary.payDate ?? '',
                                             ])
                                         .toList(),
                                   );
@@ -94,7 +104,8 @@ class SalaryPageMobile extends StatelessWidget {
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
-                                      .copyWith(color: Colors.white),
+                                      .copyWith(
+                                          color: Colors.white, fontSize: 16),
                                 ));
                           } else {
                             return const SizedBox();

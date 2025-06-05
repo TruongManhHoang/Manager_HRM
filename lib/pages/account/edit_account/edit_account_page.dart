@@ -297,7 +297,7 @@ class EditAccountPage extends StatelessWidget {
                                                               color:
                                                                   Colors.white)
                                                           : Text(
-                                                              'Thêm tài khoản',
+                                                              'Sửa tài khoản tài khoản',
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme

@@ -29,7 +29,7 @@ class App extends StatelessWidget {
                 ..add(AuthStarted())),
         ],
         child: MaterialApp.router(
-          title: 'Admin Dai Hoc',
+          title: 'Manager HRM',
           themeMode: ThemeMode.light,
           theme: TAppTheme.lightTheme,
           darkTheme: TAppTheme.darkTheme,

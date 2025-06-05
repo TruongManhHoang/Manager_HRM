@@ -21,6 +21,13 @@ class DataTablePositon extends StatelessWidget {
       builder: (context, state) {
         if (state.isLoading) {
           return const Center(child: CircularProgressIndicator());
+        } else if (state.positions.isEmpty) {
+          return const Center(
+            child: Text(
+              'Không có dữ liệu chức vụ.',
+              style: TextStyle(fontSize: 16, color: Colors.red),
+            ),
+          );
         } else if (state.isSuccess) {
           return TPaginatedDataTable(
             minWidth: 700,

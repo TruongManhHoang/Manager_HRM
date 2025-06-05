@@ -26,6 +26,13 @@ class _DataTableDisciplinaryState extends State<DataTableDisciplinary> {
       builder: (context, state) {
         if (state is DisciplinaryLoading) {
           return const Center(child: CircularProgressIndicator());
+        } else if (state is DisciplinaryLoaded && state.disciplinary.isEmpty) {
+          return const Center(
+            child: Text(
+              'Không có dữ liệu kỷ luật.',
+              style: TextStyle(fontSize: 16, color: Colors.red),
+            ),
+          );
         } else if (state is DisciplinaryLoaded) {
           return TPaginatedDataTable(
             minWidth: 700,

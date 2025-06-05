@@ -32,6 +32,18 @@ class PersionalCreateEvent extends PersionalEvent {
   List<Object?> get props => [personnelManagement];
 }
 
+class SearchPersionalEvent extends PersionalEvent {
+  final String query;
+  // final XFile? image;
+
+  const SearchPersionalEvent(
+    this.query,
+  );
+
+  @override
+  List<Object?> get props => [query];
+}
+
 class PersionalUpdateEvent extends PersionalEvent {
   final PersionalManagement personnelManagement;
   final String? oldDepartmentId;
@@ -42,6 +54,14 @@ class PersionalUpdateEvent extends PersionalEvent {
   );
   @override
   List<Object?> get props => [personnelManagement];
+}
+
+class FilterPersionalByStatusEvent extends PersionalEvent {
+  final String status;
+
+  const FilterPersionalByStatusEvent(this.status);
+  @override
+  List<Object?> get props => [status];
 }
 
 class PersionalDeleteEvent extends PersionalEvent {

@@ -74,6 +74,7 @@ import 'package:admin_hrm/pages/reward/reward_page.dart';
 
 import 'package:admin_hrm/pages/salary/add_salary/add_salary_page.dart';
 import 'package:admin_hrm/pages/salary/bloc/salary_bloc.dart';
+import 'package:admin_hrm/pages/salary/edit_deparment/edit_salary.dart';
 import 'package:admin_hrm/pages/salary/employee_salary_page.dart';
 import 'package:admin_hrm/pages/salary/salary_page.dart';
 import 'package:admin_hrm/pages/splash_screen/splash_screen.dart';
@@ -476,19 +477,16 @@ class AppRouter {
                   return AddSalaryPage();
                 },
               ),
-              // routes: [
-
-              //   GoRoute(
-              //     path: RouterName.editSalary,
-              //     name: RouterName.editSalary,
-              //     builder: (context, state) {
-              //       final salary = state.extra as SalaryModel;
-              //       return AddEditSalaryPage(
-              //         salaryModel: salary,
-              //       );
-              //     },
-              //   ),
-              // ]),
+              GoRoute(
+                path: RouterName.editSalary,
+                name: RouterName.editSalary,
+                builder: (context, state) {
+                  final salary = state.extra as SalaryModel;
+                  return EditSalaryPage(
+                    salary: salary,
+                  );
+                },
+              ),
               GoRoute(
                 path: RouterName.employeeSalaryPage,
                 name: RouterName.employeeSalaryPage,

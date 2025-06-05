@@ -39,6 +39,18 @@ class THelperFunctions {
     }
   }
 
+  static Color getPesonalStatusColor(String personal) {
+    if (personal == 'Đang làm việc') {
+      return Colors.green;
+    } else if (personal == 'Ngừng làm việc') {
+      return Colors.orange;
+    } else if (personal == 'Nghỉ việc') {
+      return Colors.red;
+    } else {
+      return Colors.grey;
+    }
+  }
+
   static Color getContractStatusColor(String contract) {
     if (contract == 'Hoạt động') {
       return Colors.green;

@@ -30,18 +30,16 @@ class DataTableEmployee extends StatelessWidget {
       builder: (context, state) {
         if (state.isLoading) {
           return const Center(child: CircularProgressIndicator());
-        }
-
-        if (state.isFailure) {
+        } else if (state.isFailure) {
           return Center(child: Text('Lỗi: ${state.errorMessage}'));
-        }
-
-        if (state.isSuccess) {
+        } else if (state.personnel == null || state.personnel!.isEmpty) {
+          return const Center(child: Text('Không có dữ liệu nhân viên.'));
+        } else if (state.isSuccess) {
           final employees = state.personnel;
 
-          if (employees!.isEmpty) {
-            return const Center(child: Text('Không có dữ liệu nhân viên.'));
-          }
+          // if (employees!.isEmpty) {
+          //   return const Center(child: Text('Không có dữ liệu nhân viên.'));
+          // }
 
           return TPaginatedDataTable(
             tableHeight: 500,
@@ -135,20 +133,13 @@ class DataTableEmployee extends StatelessWidget {
                           softWrap: true,
                           textAlign: TextAlign.center,
                           style: baseStyle))),
-              // DataColumn2(
-              //     label: Center(
-              //         child: Text('Ngày bắt đầu',
-              //             maxLines: 2,
-              //             softWrap: true,
-              //             textAlign: TextAlign.center,
-              //             style: baseStyle))),
-              // DataColumn2(
-              //     label: Center(
-              //         child: Text('Trạng thái',
-              //             maxLines: 2,
-              //             softWrap: true,
-              //             textAlign: TextAlign.center,
-              //             style: baseStyle))),
+              DataColumn2(
+                  label: Center(
+                      child: Text('Trạng thái',
+                          maxLines: 2,
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          style: baseStyle))),
               DataColumn2(
                   label: Center(
                       child: Text('Chức năng khác',
@@ -157,7 +148,7 @@ class DataTableEmployee extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: baseStyle))),
             ],
-            source: TableEmployeeRows(context, employees),
+            source: TableEmployeeRows(context, employees!),
             rowsPerPage: 10,
           );
         }

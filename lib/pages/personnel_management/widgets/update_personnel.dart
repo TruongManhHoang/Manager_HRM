@@ -287,7 +287,8 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                                       TDropDownMenu(
                                         menus: const [
                                           'Đang làm việc',
-                                          'Nghỉ việc',
+                                          'Ngừng làm việc'
+                                              'Nghỉ việc',
                                         ],
                                         controller: statusController,
                                         text: 'Trạng thái',

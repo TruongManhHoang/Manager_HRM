@@ -25,15 +25,11 @@ class TableSourceSalary extends DataTableSource {
       (e) => e.id == salary.employeeId,
     );
     final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+    final formatDate = DateFormat('dd/MM/yyyy');
     TextStyle baseStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
           color: TColors.dark,
           fontWeight: FontWeight.w500,
         );
-
-    TextStyle highlightStyle = baseStyle.copyWith(
-      color: TColors.primary,
-      fontWeight: FontWeight.w600,
-    );
 
     return DataRow2(cells: [
       DataCell(Padding(
@@ -78,6 +74,11 @@ class TableSourceSalary extends DataTableSource {
         child: Center(
             child: Text(currencyFormat.format(salary.totalSalary),
                 style: baseStyle)),
+      )),
+      DataCell(Padding(
+        padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+        child: Center(
+            child: Text(formatDate.format(salary.payDate!), style: baseStyle)),
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.xs),

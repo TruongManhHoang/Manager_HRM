@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class AddRewardPage extends StatelessWidget {
   const AddRewardPage({super.key});
@@ -37,7 +38,23 @@ class AddRewardPage extends StatelessWidget {
     TextEditingController statusController = TextEditingController();
 
     final _formKey = GlobalKey<FormState>();
-
+    // final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+    if (!rewardValueController.hasListeners) {
+      rewardValueController.addListener(() {
+        final text =
+            rewardValueController.text.replaceAll('.', '').replaceAll(',', '');
+        if (text.isEmpty) return;
+        final number = int.tryParse(text);
+        if (number == null) return;
+        final formatted = NumberFormat('#,###', 'vi_VN').format(number);
+        if (rewardValueController.text != formatted) {
+          rewardValueController.value = TextEditingValue(
+            text: formatted,
+            selection: TextSelection.collapsed(offset: formatted.length),
+          );
+        }
+      });
+    }
     return BlocConsumer<RewardBloc, RewardState>(listener: (context, state) {
       if (state is RewardSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -163,6 +180,7 @@ class AddRewardPage extends StatelessWidget {
                                             const Gap(TSizes.spaceBtwItems),
                                             TTextFormField(
                                               textAlign: true,
+                                              isFormatted: true,
                                               text: 'Giá trị khen thưởng',
                                               hint: 'Nhập giá trị khen thưởng',
                                               controller: rewardValueController,

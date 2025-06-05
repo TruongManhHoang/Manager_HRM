@@ -419,11 +419,17 @@ class GlobalStorageImpl implements GlobalStorage {
   // TODO: implement attendances
   List<AttendanceModel>? get attendances {
     final jsonList = _box.get(GlobalStorageKey.attendances, defaultValue: []);
-    if (jsonList is List) {
-      return jsonList
-          .map((e) => AttendanceModel.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
+    if (jsonList is List && jsonList.isNotEmpty) {
+      try {
+        return jsonList
+            .map((e) => AttendanceModel.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+      } catch (e) {
+        debugPrint('Error parsing attendances: $e');
+        return [];
+      }
     }
+    return [];
   }
 
   @override
@@ -438,25 +444,36 @@ class GlobalStorageImpl implements GlobalStorage {
   }
 
   @override
-  // TODO: implement contracts
   List<ContractModel>? get contracts {
     final jsonList = _box.get(GlobalStorageKey.contracts, defaultValue: []);
-    if (jsonList is List) {
-      return jsonList
-          .map((e) => ContractModel.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
+    if (jsonList is List && jsonList.isNotEmpty) {
+      try {
+        return jsonList
+            .map((e) => ContractModel.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+      } catch (e) {
+        debugPrint('Error parsing contracts: $e');
+        return [];
+      }
     }
+    return [];
   }
 
   @override
   List<DisciplinaryModel>? get disciplinaryActions {
     final jsonList = _box.get(GlobalStorageKey.disciplinarys, defaultValue: []);
-    if (jsonList is List) {
-      return jsonList
-          .map((e) =>
-              DisciplinaryModel.fromFirestore(Map<String, dynamic>.from(e)))
-          .toList();
+    if (jsonList is List && jsonList.isNotEmpty) {
+      try {
+        return jsonList
+            .map((e) =>
+                DisciplinaryModel.fromFirestore(Map<String, dynamic>.from(e)))
+            .toList();
+      } catch (e) {
+        debugPrint('Error parsing disciplinary actions: $e');
+        return [];
+      }
     }
+    return [];
   }
 
   @override
@@ -509,21 +526,33 @@ class GlobalStorageImpl implements GlobalStorage {
   @override
   List<KPIModel>? get kpis {
     final jsonList = _box.get(GlobalStorageKey.kpis, defaultValue: []);
-    if (jsonList is List) {
-      return jsonList
-          .map((e) => KPIModel.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
+    if (jsonList is List && jsonList.isNotEmpty) {
+      try {
+        return jsonList
+            .map((e) => KPIModel.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+      } catch (e) {
+        debugPrint('Error parsing kpis: $e');
+        return [];
+      }
     }
+    return [];
   }
 
   @override
   List<RewardModel>? get rewards {
     final jsonList = _box.get(GlobalStorageKey.rewards, defaultValue: []);
-    if (jsonList is List) {
-      return jsonList
-          .map((e) => RewardModel.fromMap(Map<String, dynamic>.from(e)))
-          .toList();
+    if (jsonList is List && jsonList.isNotEmpty) {
+      try {
+        return jsonList
+            .map((e) => RewardModel.fromMap(Map<String, dynamic>.from(e)))
+            .toList();
+      } catch (e) {
+        debugPrint('Error parsing rewards: $e');
+        return [];
+      }
     }
+    return [];
   }
 
   @override
@@ -559,8 +588,19 @@ class GlobalStorageImpl implements GlobalStorage {
 
   @override
   // TODO: implement salaries
-  List<SalaryModel>? get salaries => _box
-      .get(GlobalStorageKey.salaries, defaultValue: [])
-      .map((e) => SalaryModel.fromJson(Map<String, dynamic>.from(e)))
-      .toList();
+  @override
+  List<SalaryModel>? get salaries {
+    final jsonList = _box.get(GlobalStorageKey.salaries, defaultValue: []);
+    if (jsonList is List && jsonList.isNotEmpty) {
+      try {
+        return jsonList
+            .map((e) => SalaryModel.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+      } catch (e) {
+        debugPrint('Error parsing salaries: $e');
+        return null;
+      }
+    }
+    return null;
+  }
 }

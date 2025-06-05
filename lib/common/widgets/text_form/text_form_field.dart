@@ -1,3 +1,4 @@
+import 'package:admin_hrm/common/widgets/formatter/input_format.dart';
 import 'package:admin_hrm/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -15,7 +16,8 @@ class TTextFormField extends StatelessWidget {
       this.textAlign = false,
       this.maxLines = 1,
       this.text,
-      this.suffixIcon});
+      this.suffixIcon,
+      this.isFormatted = false});
   final String hint;
   final String? text;
   final String? Function(String?)? validator;
@@ -25,6 +27,7 @@ class TTextFormField extends StatelessWidget {
   final bool? obscureText;
   final bool? enabled;
   final int maxLines;
+  final bool isFormatted;
   final Widget? suffixIcon;
 
   final bool textAlign;
@@ -47,6 +50,7 @@ class TTextFormField extends StatelessWidget {
               obscureText: obscureText ?? false,
               enabled: enabled,
               maxLines: maxLines,
+              inputFormatters: isFormatted ? [CurrencyInputFormatter()] : [],
               decoration: InputDecoration(
                 hintText: hint,
                 suffixIcon: suffixIcon,

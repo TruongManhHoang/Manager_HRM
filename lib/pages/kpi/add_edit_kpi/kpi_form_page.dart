@@ -90,7 +90,7 @@ class _KPIFormPageState extends State<KPIFormPage> {
       final now = DateTime.now();
       final newKPI = KPIModel(
         id: widget.initialKPI?.id ?? '',
-        userId: selectedUser.code ?? '',
+        userId: selectedUser.id ?? '',
         departmentId: selectedUser.departmentId,
         period: _periodController.text,
         metrics: _metrics,
