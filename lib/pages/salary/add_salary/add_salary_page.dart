@@ -120,7 +120,7 @@ class _AddSalaryPageState extends State<AddSalaryPage> {
       baseSalaryController.text = baseSalary.toString();
       rewardBonusController.text = totalRewardValue.toString();
       totalSalaryController.text = totalSalary.toStringAsFixed(2);
-      // kpiBonusController.text = kpiBonus.toString();
+      kpiBonusController.text = kpiBonus.toStringAsFixed(2);
     });
   }
 
@@ -228,33 +228,61 @@ class _AddSalaryPageState extends State<AddSalaryPage> {
                                                     fontWeight:
                                                         FontWeight.w500),
                                           ),
-                                          Gap(
-                                            TSizes.spaceBtwItems,
-                                          ),
-                                          DropdownMenu(
-                                            initialSelection:
-                                                employeeIdController.text,
-                                            controller: employeeIdController,
-                                            width: 200,
-                                            trailingIcon: const Icon(
-                                                Icons.arrow_drop_down),
-                                            dropdownMenuEntries: personals!
-                                                .map((personal) =>
-                                                    DropdownMenuEntry<String>(
-                                                      label: personal.name!,
-                                                      value: personal.id!,
-                                                    ))
-                                                .toList(),
-                                            onSelected: (value) {
-                                              setState(() {
-                                                _selectedUserId = value;
-                                                employeeIdController.text =
-                                                    value!;
-                                              });
-                                              _updateUserData(
-                                                  value); // <- Gọi cập nhật dữ liệu
-                                            },
-                                            hintText: 'Chọn nhân viên',
+                                          Gap(TSizes.spaceBtwItems),
+                                          Expanded(
+                                            child:
+                                                DropdownButtonFormField<String>(
+                                              value: _selectedUserId,
+                                              decoration: InputDecoration(
+                                                hintText: 'Chọn nhân viên',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey[300]!),
+                                                ),
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 8),
+                                              ),
+                                              items: (personals ?? [])
+                                                  .map((personal) {
+                                                return DropdownMenuItem<String>(
+                                                  value: personal.id,
+                                                  child: Text(
+                                                    personal.name ?? 'N/A',
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                );
+                                              }).toList(),
+                                              onChanged: (value) {
+                                                if (value != null) {
+                                                  setState(() {
+                                                    _selectedUserId = value;
+                                                    // Cập nhật controller để hiển thị tên nhân viên
+                                                    final selectedPerson =
+                                                        personals?.firstWhere(
+                                                      (p) => p.id == value,
+                                                      orElse: () =>
+                                                          personals!.first,
+                                                    );
+                                                    employeeIdController.text =
+                                                        selectedPerson?.name ??
+                                                            '';
+                                                  });
+                                                  _updateUserData(value);
+                                                }
+                                              },
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Vui lòng chọn nhân viên';
+                                                }
+                                                return null;
+                                              },
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -289,14 +317,14 @@ class _AddSalaryPageState extends State<AddSalaryPage> {
                                         controller: baseSalaryController,
                                         keyboardType: TextInputType.number,
                                       ),
-                                      // const Gap(TSizes.spaceBtwItems),
-                                      // TTextFormField(
-                                      //   textAlign: true,
-                                      //   text: 'Thưởng KPI',
-                                      //   hint: '',
-                                      //   controller: kpiBonusController,
-                                      //   keyboardType: TextInputType.number,
-                                      // ),
+                                      const Gap(TSizes.spaceBtwItems),
+                                      TTextFormField(
+                                        textAlign: true,
+                                        text: 'Thưởng KPI',
+                                        hint: '',
+                                        controller: kpiBonusController,
+                                        keyboardType: TextInputType.number,
+                                      ),
                                       const Gap(TSizes.spaceBtwItems),
                                       Row(
                                         children: [

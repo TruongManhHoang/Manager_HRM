@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class EditDisciplinaryPage extends StatelessWidget {
   const EditDisciplinaryPage({super.key, this.disciplinaryModel});
@@ -29,6 +30,12 @@ class EditDisciplinaryPage extends StatelessWidget {
     final employee = personals!.firstWhere(
       (element) => element.id == disciplinaryModel?.employeeId,
     );
+
+    String formatNumber(int number) {
+      final formatter = NumberFormat('#,###', 'vi_VN');
+      return formatter.format(number);
+    }
+
     TextEditingController codeController = TextEditingController(
       text: disciplinaryModel?.code ?? '',
     );
@@ -36,8 +43,11 @@ class EditDisciplinaryPage extends StatelessWidget {
       text: disciplinaryModel?.disciplinaryType ?? '',
     );
     TextEditingController disciplinaryValueController = TextEditingController(
-      text: disciplinaryModel?.disciplinaryValue.toString() ?? '',
+      text: disciplinaryModel?.disciplinaryValue != null
+          ? formatNumber(disciplinaryModel!.disciplinaryValue!)
+          : '',
     );
+
     TextEditingController reasonController = TextEditingController(
       text: disciplinaryModel?.reason ?? '',
     );
@@ -180,6 +190,7 @@ class EditDisciplinaryPage extends StatelessWidget {
                                               textAlign: true,
                                               text: 'Giá trị kỷ luật',
                                               hint: 'Nhập giá trị kỷ luật',
+                                              isFormatted: true,
                                               controller:
                                                   disciplinaryValueController,
                                               keyboardType:
@@ -255,33 +266,39 @@ class EditDisciplinaryPage extends StatelessWidget {
                                                         if (_formKey
                                                             .currentState!
                                                             .validate()) {
-                                                          final disciplinary = DisciplinaryModel(
-                                                              id: disciplinaryModel
-                                                                  ?.id,
-                                                              employeeId:
-                                                                  employee.id!,
-                                                              code:
-                                                                  codeController
-                                                                      .text,
-                                                              disciplinaryType:
-                                                                  disciplinaryTypeController
-                                                                      .text,
-                                                              disciplinaryValue:
-                                                                  int.parse(
-                                                                      disciplinaryValueController
-                                                                          .text),
-                                                              reason:
-                                                                  reasonController
-                                                                      .text,
-                                                              severity:
-                                                                  severityController
-                                                                      .text,
-                                                              status:
-                                                                  statusController
-                                                                      .text,
-                                                              approvedBy:
-                                                                  approveByController
-                                                                      .text);
+                                                          final disciplinary =
+                                                              DisciplinaryModel(
+                                                                  id: disciplinaryModel
+                                                                      ?.id,
+                                                                  employeeId:
+                                                                      employee
+                                                                          .id!,
+                                                                  code:
+                                                                      codeController
+                                                                          .text,
+                                                                  disciplinaryType:
+                                                                      disciplinaryTypeController
+                                                                          .text,
+                                                                  disciplinaryValue:
+                                                                      int.parse(
+                                                                    disciplinaryValueController
+                                                                        .text
+                                                                        .replaceAll(
+                                                                            '.',
+                                                                            ''),
+                                                                  ),
+                                                                  reason:
+                                                                      reasonController
+                                                                          .text,
+                                                                  severity:
+                                                                      severityController
+                                                                          .text,
+                                                                  status:
+                                                                      statusController
+                                                                          .text,
+                                                                  approvedBy:
+                                                                      approveByController
+                                                                          .text);
 
                                                           context
                                                               .read<

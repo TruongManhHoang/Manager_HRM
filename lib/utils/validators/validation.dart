@@ -1,11 +1,9 @@
-
-
 /// VALIDATION CLASS
 class TValidator {
   /// Empty Text Validation
   static String? validateEmptyText(String? fieldName, String? value) {
     if (value == null || value.isEmpty) {
-      return '$fieldName is required.';
+      return 'Vui lòng nhập $fieldName.';
     }
 
     return null;
@@ -28,7 +26,10 @@ class TValidator {
 
     // Check if the username doesn't start or end with an underscore or hyphen.
     if (isValid) {
-      isValid = !username.startsWith('_') && !username.startsWith('-') && !username.endsWith('_') && !username.endsWith('-');
+      isValid = !username.startsWith('_') &&
+          !username.startsWith('-') &&
+          !username.endsWith('_') &&
+          !username.endsWith('-');
     }
 
     if (!isValid) {
@@ -57,27 +58,27 @@ class TValidator {
   /// Password Validation
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Password is required.';
+      return 'Vui lòng nhập mật khẩu.';
     }
 
     // Check for minimum password length
     if (value.length < 6) {
-      return 'Password must be at least 6 characters long.';
+      return 'Mật khẩu phải có ít nhất 6 ký tự.';
     }
 
     // Check for uppercase letters
     if (!value.contains(RegExp(r'[A-Z]'))) {
-      return 'Password must contain at least one uppercase letter.';
+      return 'Mật khẩu phải chứa ít nhất một chữ cái in hoa.';
     }
 
     // Check for numbers
     if (!value.contains(RegExp(r'[0-9]'))) {
-      return 'Password must contain at least one number.';
+      return 'Mật khẩu phải chứa ít nhất một số.';
     }
 
     // Check for special characters
     if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      return 'Password must contain at least one special character.';
+      return 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt.';
     }
 
     return null;

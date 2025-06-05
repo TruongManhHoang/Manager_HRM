@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:admin_hrm/common/widgets/breadcrumb/t_breadcrums_with_heading.dart';
 import 'package:admin_hrm/common/widgets/method/method.dart';
+import 'package:admin_hrm/constants/sizes.dart';
 import 'package:admin_hrm/pages/department/bloc/department_bloc.dart';
 import 'package:admin_hrm/pages/personnel_management/bloc/persional_bloc.dart';
 import 'package:admin_hrm/pages/personnel_management/table/data_table_personnel.dart';
@@ -9,11 +12,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-class EmployeePageDesktop extends StatelessWidget {
+class EmployeePageDesktop extends StatefulWidget {
   const EmployeePageDesktop({super.key});
 
   @override
+  State<EmployeePageDesktop> createState() => _EmployeePageDesktopState();
+}
+
+class _EmployeePageDesktopState extends State<EmployeePageDesktop> {
+  String selectedStatus = 'Tất cả';
+  final statusOptions = [
+    'Tất cả',
+    'Đang làm việc',
+    'Ngừng làm việc',
+    'Nghỉ việc',
+  ];
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      // ✅ Đảm bảo gọi search event
+      context.read<PersionalBloc>().add(SearchPersionalEvent(query));
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final TextEditingController _searchController = TextEditingController();
+
     return Scaffold(
         body: SingleChildScrollView(
       child: Container(
@@ -23,10 +50,6 @@ class EmployeePageDesktop extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const TBreadcrumsWithHeading(
-                heading: 'Nhân viên',
-                breadcrumbItems: [],
-              ),
               const Row(
                 children: [
                   Text(
@@ -44,11 +67,76 @@ class EmployeePageDesktop extends StatelessWidget {
                 child: Column(
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        SizedBox(
+                          width: 300,
+                          child: TextFormField(
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                labelText: 'Tìm kiếm nhân viên',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.search),
+                              ),
+                              onChanged: (value) {
+                                context
+                                    .read<PersionalBloc>()
+                                    .add(SearchPersionalEvent(value));
+                              }),
+                        ),
+                        const Gap(TSizes.spaceBtwItems),
+                        Container(
+                          width: 220,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey.shade400),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: selectedStatus,
+                              isExpanded: true,
+                              icon: const Icon(Icons.arrow_drop_down),
+                              dropdownColor: Colors.white,
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              items: statusOptions.map((status) {
+                                return DropdownMenuItem<String>(
+                                  value: status,
+                                  child: Text(status),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() {
+                                    selectedStatus = value;
+                                  });
+
+                                  context
+                                      .read<PersionalBloc>()
+                                      .add(FilterPersionalByStatusEvent(value));
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
                         TextButton(
                             style: TextButton.styleFrom(
                               backgroundColor: Colors.blue,
+                              minimumSize: const Size(150, 50),
                             ),
                             onPressed: () {
                               context.push(RouterName.addEmployee);
@@ -58,7 +146,7 @@ class EmployeePageDesktop extends StatelessWidget {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
-                                  .copyWith(color: Colors.white),
+                                  .copyWith(color: Colors.white, fontSize: 16),
                             )),
                         const Gap(10),
                         BlocBuilder<PersionalBloc, PersionalState>(
@@ -67,6 +155,7 @@ class EmployeePageDesktop extends StatelessWidget {
                             return TextButton(
                                 style: TextButton.styleFrom(
                                   backgroundColor: Colors.blue,
+                                  minimumSize: const Size(150, 50),
                                 ),
                                 onPressed: () {
                                   exportDynamicExcel(
@@ -110,36 +199,13 @@ class EmployeePageDesktop extends StatelessWidget {
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
-                                      .copyWith(color: Colors.white),
+                                      .copyWith(
+                                          color: Colors.white, fontSize: 16),
                                 ));
                           } else {
                             return const SizedBox();
                           }
                         }),
-                        const Gap(10),
-                        TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                            ),
-                            onPressed: () {},
-                            child: Text(
-                              'Hiện nhân viên đã ngừng hoạt động',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: Colors.white),
-                            )),
-                        const Gap(10),
-                        TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                            ),
-                            onPressed: () {},
-                            child: Text('Nhân viên thôi việc',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white))),
                       ],
                     ),
                     const Gap(20),

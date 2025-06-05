@@ -164,6 +164,7 @@ class EditRewardPage extends StatelessWidget {
                                               text: 'Giá trị khen thưởng',
                                               hint: 'Nhập giá trị khen thưởng',
                                               controller: rewardValueController,
+                                              isFormatted: true,
                                               keyboardType:
                                                   TextInputType.number,
                                             ),

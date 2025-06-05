@@ -114,59 +114,62 @@ class TableEmployeeRows extends DataTableSource {
         DataCell(Center(
           child: Text(
             department.name,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge!
-                .copyWith(color: TColors.textPrimary),
+            style: Theme.of(context).textTheme.bodyLarge!,
           ),
         )),
-        // DataCell(Padding(
-        //   padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
-        //   child: Center(
-        //     child: Text(employee.date, style: baseStyle),
-        //   ),
-        // )),
-        // DataCell(
-        //   TRoundedContainer(
-        //     radius: TSizes.cardRadiusSm,
-        //     padding: const EdgeInsets.symmetric(
-        //       vertical: TSizes.xs,
-        //       horizontal: TSizes.md,
-        //     ),
-        //     child: Text(
-        //       employee.status.toString(),
-        //       style: baseStyle.copyWith(
-        //         color:
-        //             THelperFunctions.getContractStatusColor(employee.status!),
-        //       ),
-        //     ),
-        //   ),
-        // ),
+        DataCell(
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 6, vertical: TSizes.xs),
+              decoration: BoxDecoration(
+                color: THelperFunctions.getPesonalStatusColor(employee.status!)
+                    .withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                employee.status!,
+                style: baseStyle.copyWith(
+                    color: THelperFunctions.getPesonalStatusColor(
+                        employee.status!)),
+              ),
+            ),
+          ),
+        ),
         DataCell(Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
                   context.pushNamed(RouterName.employeeDetailPage,
                       extra: employee);
                 },
-                icon: const Icon(Iconsax.eye),
-                color: TColors.primary,
+                child: const Icon(
+                  Iconsax.eye,
+                  color: TColors.primary,
+                ),
               ),
-              IconButton(
-                onPressed: () {
-                  context.go(RouterName.updateEmployee, extra: employee);
+              const Gap(10),
+              GestureDetector(
+                onTap: () {
+                  context.pushNamed(RouterName.updateEmployee, extra: employee);
                 },
-                icon: const Icon(Icons.edit),
-                color: TColors.primary,
+                child: const Icon(
+                  Iconsax.edit,
+                  color: TColors.primary,
+                ),
               ),
-              IconButton(
-                onPressed: () {
+              const Gap(10),
+              GestureDetector(
+                onTap: () {
                   _confirmDelete(context, employee);
                 },
-                icon: const Icon(Icons.delete),
-                color: Colors.red,
+                child: const Icon(
+                  Iconsax.trash,
+                  color: Colors.red,
+                ),
               ),
             ],
           ),

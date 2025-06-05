@@ -11,6 +11,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../constants/colors.dart';
 
 import '../../../utils/helpers/helper_functions.dart';
@@ -31,7 +32,7 @@ class DisciplinaryTableRows extends DataTableSource {
           color: TColors.dark,
           fontWeight: FontWeight.w500,
         );
-
+    final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
     TextStyle highlightStyle = baseStyle.copyWith(
       color: TColors.primary,
       fontWeight: FontWeight.w600,
@@ -58,7 +59,7 @@ class DisciplinaryTableRows extends DataTableSource {
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
         child: Center(
-            child: Text(disciplinary.disciplinaryType, style: highlightStyle)),
+            child: Text(disciplinary.disciplinaryType, style: baseStyle)),
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
@@ -67,7 +68,7 @@ class DisciplinaryTableRows extends DataTableSource {
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
         child: Center(
-            child: Text(disciplinary.disciplinaryValue.toString(),
+            child: Text(currencyFormat.format(disciplinary.disciplinaryValue),
                 style: baseStyle)),
       )),
       DataCell(Padding(

@@ -35,7 +35,15 @@ class _DataTableRewardState extends State<DataTableReward> {
       builder: (context, state) {
         if (state is RewardLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (state is RewardLoaded) {
+        } else if (state is RewardLoaded && state.rewards.isEmpty) {
+          return const Center(
+            child: Text(
+              'Không có dữ liệu khen thưởng.',
+              style: TextStyle(fontSize: 16, color: Colors.red),
+            ),
+          );
+        }
+        if (state is RewardLoaded) {
           return TPaginatedDataTable(
             minWidth: 700,
             tableHeight: 500,

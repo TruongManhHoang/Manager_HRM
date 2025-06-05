@@ -20,6 +20,8 @@ class DataTableSalary extends StatelessWidget {
       builder: (context, state) {
         if (state is SalaryLoading) {
           return const Center(child: CircularProgressIndicator());
+        } else if (state is SalaryLoaded && state.salaries.isEmpty) {
+          return const Center(child: Text('Không có dữ liệu bảng lương.'));
         } else if (state is SalaryLoaded) {
           return TPaginatedDataTable(
             minWidth: 700,
@@ -92,6 +94,15 @@ class DataTableSalary extends StatelessWidget {
               DataColumn2(
                 label: Center(
                   child: Text('Tổng lương thực lĩnh',
+                      maxLines: 2,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: baseStyle),
+                ),
+              ),
+              DataColumn2(
+                label: Center(
+                  child: Text('Ngày tạo',
                       maxLines: 2,
                       softWrap: true,
                       textAlign: TextAlign.center,

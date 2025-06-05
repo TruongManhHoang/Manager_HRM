@@ -13,6 +13,7 @@ import 'package:admin_hrm/di/locator.dart';
 import 'package:admin_hrm/local/hive_storage.dart';
 import 'package:admin_hrm/pages/personnel_management/bloc/persional_bloc.dart';
 import 'package:admin_hrm/router/routers_name.dart';
+import 'package:admin_hrm/utils/helpers/helper_functions.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -49,63 +50,6 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
     return null;
   }
 
-  // Future<String?> uploadImageWeb(Uint8List fileBytes, String fileName) async {
-  //   try {
-  //     if (fileBytes.isEmpty) {
-  //       print('❌ Error: fileBytes is empty');
-  //       return null;
-  //     }
-
-  //     final ext = fileName.split('.').last.toLowerCase();
-  //     final contentType = {
-  //           'png': 'image/png',
-  //           'jpg': 'image/jpeg',
-  //           'jpeg': 'image/jpeg',
-  //           'gif': 'image/gif',
-  //         }[ext] ??
-  //         'application/octet-stream';
-
-  //     final metadata = SettableMetadata(contentType: contentType);
-
-  //     final storageRef =
-  //         FirebaseStorage.instance.ref().child('images/$fileName');
-
-  //     print('⬆️ Uploading file: $fileName');
-  //     print('📄 Using contentType: $contentType');
-
-  //     final uploadTask = await storageRef.putData(fileBytes, metadata);
-
-  //     // Truy xuất metadata sau khi upload để kiểm tra
-  //     final resultMeta = await uploadTask.ref.getMetadata();
-  //     print('✅ Uploaded Metadata: ${resultMeta.contentType}');
-
-  //     final url = await storageRef.getDownloadURL();
-  //     return url;
-  //   } catch (e) {
-  //     print('🚨 Upload error: $e');
-  //     return null;
-  //   }
-  // }
-
-  // void handleImageUploadWeb() async {
-  //   final fileData = await pickImageWeb();
-
-  //   if (fileData != null) {
-  //     final url = await uploadImageWeb(
-  //       fileData['fileBytes'],
-  //       fileData['fileName'],
-  //     );
-
-  //     if (url != null) {
-  //       setState(() {
-  //         uploadedImageUrl = url;
-  //       });
-  //       print('Uploaded image URL: $url');
-  //     }
-  //   }
-  //   print('File data: $uploadedImageUrl');
-  // }
-
   @override
   Widget build(BuildContext context) {
     final codeController = TextEditingController();
@@ -118,6 +62,7 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
     final addressController = TextEditingController();
     final educationLevelController = TextEditingController();
     final birthDateController = TextEditingController();
+    final statusController = TextEditingController();
 
     // final positions = ['Nhân viên', 'Quản lý', 'Trưởng phòng'];
     // final departments = ['Phòng nhân sự', 'Phòng kế toán'];
@@ -208,11 +153,6 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
                         child: SingleChildScrollView(
                           child: Column(
                             children: [
-                              const TBreadcrumsWithHeading(
-                                heading: 'Nhân viên',
-                                breadcrumbItems: [RouterName.addEmployee],
-                              ),
-                              const Gap(20),
                               Container(
                                 width: 600,
                                 padding:
@@ -276,9 +216,7 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
                                                 )
                                               ],
                                             ),
-
                                       const Gap(TSizes.spaceBtwItems),
-
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'Mã nhân viên',
@@ -359,11 +297,6 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
                                           ),
                                         ],
                                       ),
-                                      // TDropDownMenu(
-                                      //   menus: positions,
-                                      //   controller: positionController,
-                                      //   text: 'Chức vụ',
-                                      // ),
                                       const Gap(TSizes.spaceBtwItems),
                                       Row(
                                         children: [
@@ -407,6 +340,7 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
                                         text: 'Địa chỉ',
                                         hint: 'Nhập địa chỉ',
                                         controller: addressController,
+                                        validator: (value) {},
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(
@@ -423,13 +357,20 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
                                         controller: emailController,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
-
-                                      const Gap(TSizes.spaceBtwItems),
                                       TDropDownMenu(
                                         menus: educationLevels,
                                         controller: educationLevelController,
                                         text: 'Trình độ',
                                       ),
+                                      const Gap(TSizes.spaceBtwItems),
+                                      TDropDownMenu(
+                                          text: 'Trạng thái',
+                                          menus: const [
+                                            'Đang làm việc',
+                                            'Ngừng làm việc'
+                                                'Nghỉ việc',
+                                          ],
+                                          controller: statusController),
                                       const Gap(TSizes.spaceBtwSections),
                                       Row(
                                         children: [
@@ -495,6 +436,8 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
                                                         phone: phoneController
                                                             .text,
                                                         email: emailController
+                                                            .text,
+                                                        status: statusController
                                                             .text,
                                                         date:
                                                             "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",

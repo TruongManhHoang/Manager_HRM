@@ -84,7 +84,7 @@ class TableSourceAccount extends DataTableSource {
               account.status,
               style: baseStyle.copyWith(
                 fontSize: 12,
-                color: THelperFunctions.getStatusRewardColor(account.status),
+                color: THelperFunctions.getContractStatusColor(account.status),
                 fontWeight: FontWeight.w500,
               ),
             ),

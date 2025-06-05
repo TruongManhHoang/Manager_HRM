@@ -12,6 +12,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../constants/colors.dart';
 
 import '../../../utils/helpers/helper_functions.dart';
@@ -35,7 +36,7 @@ class RewardTableRows extends DataTableSource {
           color: TColors.dark,
           fontWeight: FontWeight.w500,
         );
-
+    final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
     TextStyle highlightStyle = baseStyle.copyWith(
       color: TColors.primary,
       fontWeight: FontWeight.w600,
@@ -52,7 +53,7 @@ class RewardTableRows extends DataTableSource {
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
-        child: Center(child: Text(reward.rewardType, style: highlightStyle)),
+        child: Center(child: Text(reward.rewardType, style: baseStyle)),
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
@@ -60,7 +61,9 @@ class RewardTableRows extends DataTableSource {
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
-        child: Center(child: Text('${reward.rewardValue}', style: baseStyle)),
+        child: Center(
+            child: Text(currencyFormat.format(reward.rewardValue),
+                style: baseStyle)),
       )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.xs),

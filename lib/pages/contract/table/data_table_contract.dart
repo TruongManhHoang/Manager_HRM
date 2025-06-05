@@ -23,6 +23,13 @@ class DataTableContract extends StatelessWidget {
       builder: (context, state) {
         if (state.isLoading) {
           return const Center(child: CircularProgressIndicator());
+        } else if (state.contracts.isEmpty) {
+          return const Center(
+            child: Text(
+              'Không có dữ liệu hợp đồng.',
+              style: TextStyle(fontSize: 16, color: Colors.red),
+            ),
+          );
         } else if (state.isSuccess) {
           return TPaginatedDataTable(
             minWidth: 700,
