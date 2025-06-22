@@ -64,14 +64,14 @@ class EditContract extends StatelessWidget {
       if (state.isSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Thêm hợp đồng thành công'),
+            content: Text('Cập nhật hợp đồng thành công'),
           ),
         );
         context.go(RouterName.contractPage);
       } else if (state.isFailure) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Thêm hợp đồng thất bại: ${state.error}'),
+            content: Text('Cập nhật hợp đồng thất bại'),
           ),
         );
       }
@@ -330,8 +330,8 @@ class EditContract extends StatelessWidget {
                                                                       endDateController
                                                                           .text),
                                                                   updatedAt:
-                                                                      DateTime
-                                                                          .now());
+                                                                      DateTime.now(),
+                                                                  employeeName: contract.employeeName);
 
                                                           // Process data
                                                           context

@@ -107,7 +107,6 @@ class Sidebar extends StatelessWidget {
                         icon: Iconsax.document1,
                         title: 'Xuất báo cáo',
                         router: RouterName.reportPage),
-                    const Gap(TSizes.spaceBtwItems),
                     // Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 25),
                     //   child: Row(

@@ -18,13 +18,56 @@ class ReportPageDesktop extends StatefulWidget {
 
 class _ReportPageDesktopState extends State<ReportPageDesktop> {
   String selectedReport = 'Phòng ban';
+  late String userRole;
 
-  final List<String> reportTypes = [
-    'Phòng ban',
-    'Nhân viên',
-    'Lương',
-    'Hiệu suất làm việc',
-  ];
+  // Định nghĩa quyền truy cập cho từng role
+  final Map<String, List<String>> rolePermissions = {
+    'admin': [
+      'Phòng ban',
+      'Nhân viên',
+      'Lương',
+      'Báo cáo chấm công',
+    ],
+    'manager': [
+      'Phòng ban',
+      'Nhân viên',
+      'Báo cáo chấm công',
+    ],
+    'accounting': [
+      'Lương',
+    ],
+    'employee': [
+      'Báo cáo chấm công',
+    ],
+  };
+
+  List<String> get availableReports {
+    final globalStorage = getIt<GlobalStorage>();
+    userRole = globalStorage.role ?? 'employee';
+
+    // Debug: In ra console để kiểm tra role thực tế
+    print('Debug - User role from storage: "$userRole"');
+    print(
+        'Debug - Available keys in rolePermissions: ${rolePermissions.keys.toList()}');
+
+    // Chuẩn hóa role về lowercase để matching
+    final normalizedRole = userRole.toLowerCase();
+    final reports = rolePermissions[normalizedRole] ?? ['Báo cáo chấm công'];
+
+    print('Debug - Normalized role: "$normalizedRole"');
+    print('Debug - Available reports: $reports');
+
+    return reports;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final reports = availableReports;
+    if (reports.isNotEmpty) {
+      selectedReport = reports.first;
+    }
+  }
 
   void _exportReport() {
     if (selectedReport == 'Phòng ban') {
@@ -33,35 +76,222 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
       exportEmployeeReport();
     } else if (selectedReport == 'Lương') {
       exportSalaryReport();
-    } else if (selectedReport == 'Hiệu suất làm việc') {
-      exportKpiReport();
+    } else if (selectedReport == 'Báo cáo chấm công') {
+      exportAttendanceReport();
     }
+  }
+
+  void exportAttendanceReport() async {
+    final pdf = pw.Document();
+    final now = DateTime.now();
+    final fontData = await rootBundle.load('assets/fonts/NotoSans-Regular.ttf');
+    final ttf = pw.Font.ttf(fontData);
+    final globalStorage = getIt<GlobalStorage>();
+    final attendances = globalStorage.attendances;
+    final currentUser = globalStorage.personalModel;
+    final departments = globalStorage.departments;
+    final dateFormatter = DateFormat('dd/MM/yyyy');
+
+    final userDepartment = globalStorage.departments!.firstWhere(
+      (element) => element.id == currentUser!.departmentId,
+    );
+    final userPosition = globalStorage.positions!
+        .firstWhere((element) => element.id == currentUser!.positionId);
+
+    pdf.addPage(pw.Page(
+      build: (context) => pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Center(
+            child: pw.Text('BÁO CÁO CHẤM CÔNG ',
+                textAlign: pw.TextAlign.center,
+                style: pw.TextStyle(
+                    fontSize: 18, font: ttf, fontWeight: pw.FontWeight.bold)),
+          ),
+          pw.SizedBox(height: 10),
+          pw.Text('Thời gian xuất báo cáo: ${dateFormatter.format(now)}',
+              style: pw.TextStyle(font: ttf)),
+          pw.SizedBox(height: 20),
+
+          // Thông tin người viết báo cáo
+          pw.Text('Người viết báo cáo',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, font: ttf)),
+          pw.Text('Tên: ${currentUser!.name}', style: pw.TextStyle(font: ttf)),
+          pw.Text('Chức vụ: ${userPosition.name}',
+              style: pw.TextStyle(font: ttf)),
+          pw.Text('Phòng ban: ${userDepartment.name}',
+              style: pw.TextStyle(font: ttf)),
+          pw.Text('Địa chỉ email: ${currentUser.email}',
+              style: pw.TextStyle(font: ttf)),
+          pw.Text('Số điện thoại: ${currentUser.phone}',
+              style: pw.TextStyle(font: ttf)),
+          pw.SizedBox(height: 20),
+
+          // Thống kê tổng quan
+          pw.Text('Thống kê tổng quan:',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, font: ttf)),
+          pw.Text('Tổng số phòng ban: ${departments?.length ?? 0}',
+              style: pw.TextStyle(font: ttf)),
+          pw.SizedBox(height: 20),
+          pw.Table.fromTextArray(
+            headerStyle: pw.TextStyle(
+              font: ttf,
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 13,
+            ),
+            cellStyle: pw.TextStyle(
+              font: ttf,
+              fontSize: 12,
+            ),
+            cellPadding: const pw.EdgeInsets.all(4),
+            columnWidths: {
+              0: const pw.FixedColumnWidth(30),
+              1: const pw.FixedColumnWidth(60),
+              2: const pw.FixedColumnWidth(100),
+              3: const pw.FixedColumnWidth(120),
+              4: const pw.FixedColumnWidth(70),
+              5: const pw.FixedColumnWidth(70),
+            },
+            border: pw.TableBorder.all(
+              color: PdfColors.grey400,
+              width: 0.5,
+            ),
+            headerDecoration: const pw.BoxDecoration(
+              color: PdfColors.grey200,
+            ),
+            headers: [
+              'STT',
+              'Tên nhân viên',
+              'Thời gian vào',
+              'Thời gian ra',
+              'công theo ngày',
+              'Ngày chấm công'
+            ],
+            data: attendances?.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final attendance = entry.value;
+                  return [
+                    (index + 1).toString(),
+                    attendance.userName,
+                    dateFormatter.format(attendance.checkInTime!),
+                    dateFormatter.format(attendance.checkOutTime!),
+                    attendance.numberOfHours.toString(),
+                    attendance.date,
+                  ];
+                }).toList() ??
+                [],
+          ),
+        ],
+      ),
+    ));
+    Uint8List bytes = await pdf.save();
+    final blob = html.Blob([bytes], 'application/pdf');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute(
+          "download", "bao_cao_cham_cong_${dateFormatter.format(now)}.pdf")
+      ..click();
+    html.Url.revokeObjectUrl(url);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Đã xuất báo cáo chấm công!')),
+    );
   }
 
   void exportDepartmentReport() async {
     final pdf = pw.Document();
     final now = DateTime.now();
+    final fontData = await rootBundle.load('assets/fonts/NotoSans-Regular.ttf');
+    final ttf = pw.Font.ttf(fontData);
+    final globalStorage = getIt<GlobalStorage>();
+    final personals = globalStorage.personalManagers;
+    final currentUser = globalStorage.personalModel;
+    final departments = globalStorage.departments;
+    final dateFormatter = DateFormat('dd/MM/yyyy');
+
+    final userDepartment = globalStorage.departments!.firstWhere(
+      (element) => element.id == currentUser!.departmentId,
+    );
+    final userPosition = globalStorage.positions!
+        .firstWhere((element) => element.id == currentUser!.positionId);
 
     pdf.addPage(
       pw.Page(
         build: (context) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('BÁO CÁO DANH SÁCH PHÒNG BAN',
-                style:
-                    pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+            pw.Center(
+              child: pw.Text('BÁO CÁO PHÒNG BAN',
+                  textAlign: pw.TextAlign.center,
+                  style: pw.TextStyle(
+                      fontSize: 18, font: ttf, fontWeight: pw.FontWeight.bold)),
+            ),
             pw.SizedBox(height: 10),
-            pw.Text('Thời gian xuất báo cáo: $now'),
+            pw.Text('Thời gian xuất báo cáo: ${dateFormatter.format(now)}',
+                style: pw.TextStyle(font: ttf)),
+            pw.SizedBox(height: 20),
+
+            // Thông tin người viết báo cáo
+            pw.Text('Người viết báo cáo',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold, font: ttf)),
+            pw.Text('Tên: ${currentUser!.name}',
+                style: pw.TextStyle(font: ttf)),
+            pw.Text('Chức vụ: ${userPosition.name}',
+                style: pw.TextStyle(font: ttf)),
+            pw.Text('Phòng ban: ${userDepartment.name}',
+                style: pw.TextStyle(font: ttf)),
+            pw.Text('Địa chỉ email: ${currentUser.email}',
+                style: pw.TextStyle(font: ttf)),
+            pw.Text('Số điện thoại: ${currentUser.phone}',
+                style: pw.TextStyle(font: ttf)),
+            pw.SizedBox(height: 20),
+
+            // Thống kê tổng quan
+            pw.Text('Thống kê tổng quan:',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold, font: ttf)),
+            pw.Text('Tổng số phòng ban: ${departments?.length ?? 0}',
+                style: pw.TextStyle(font: ttf)),
             pw.SizedBox(height: 20),
             pw.Table.fromTextArray(
-              headers: ['STT', 'Mã PB', 'Tên phòng ban', 'Mô tả'],
-              data: List.generate(
-                  3,
-                  (index) => [
-                        index + 1,
-                        'PB00$index',
-                        'Phòng số $index',
-                        'Mô tả mẫu cho phòng $index',
-                      ]),
+              headerStyle: pw.TextStyle(
+                font: ttf,
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 11,
+              ),
+              cellStyle: pw.TextStyle(
+                font: ttf,
+                fontSize: 10,
+              ),
+              cellPadding: const pw.EdgeInsets.all(4),
+              columnWidths: {
+                0: const pw.FixedColumnWidth(30),
+                1: const pw.FixedColumnWidth(60),
+                2: const pw.FixedColumnWidth(100),
+                3: const pw.FixedColumnWidth(120),
+                4: const pw.FixedColumnWidth(70),
+              },
+              border: pw.TableBorder.all(
+                color: PdfColors.grey400,
+                width: 0.5,
+              ),
+              headerDecoration: const pw.BoxDecoration(
+                color: PdfColors.grey200,
+              ),
+              headers: ['STT', 'Mã PB', 'Tên phòng ban', 'Mô tả', 'Ngày tạo'],
+              data: departments?.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final department = entry.value;
+                    return [
+                      (index + 1).toString(),
+                      department.code ?? 'N/A',
+                      department.name,
+                      department.description,
+                      department.createdAt != null
+                          ? dateFormatter.format(department.createdAt!)
+                          : 'N/A',
+                    ];
+                  }).toList() ??
+                  [],
             ),
           ],
         ),
@@ -72,7 +302,8 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
     final blob = html.Blob([bytes], 'application/pdf');
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.AnchorElement(href: url)
-      ..setAttribute("download", "bao_cao_phong_ban.pdf")
+      ..setAttribute(
+          "download", "bao_cao_phong_ban_${dateFormatter.format(now)}.pdf")
       ..click();
     html.Url.revokeObjectUrl(url);
 
@@ -104,10 +335,12 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
         build: (context) => pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('BÁO CÁO NHÂN SỰ TỔNG HỢP',
-                textAlign: pw.TextAlign.center,
-                style: pw.TextStyle(
-                    fontSize: 18, font: ttf, fontWeight: pw.FontWeight.bold)),
+            pw.Center(
+              child: pw.Text('BÁO CÁO NHÂN SỰ TỔNG HỢP',
+                  textAlign: pw.TextAlign.center,
+                  style: pw.TextStyle(
+                      fontSize: 18, font: ttf, fontWeight: pw.FontWeight.bold)),
+            ),
             pw.SizedBox(height: 10),
             pw.Text('Thời gian xuất báo cáo: ${dateFormatter.format(now)}',
                 style: pw.TextStyle(font: ttf)),
@@ -142,11 +375,11 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
               headerStyle: pw.TextStyle(
                 font: ttf,
                 fontWeight: pw.FontWeight.bold,
-                fontSize: 11, // Tăng từ 8 lên 10
+                fontSize: 13, // Tăng từ 8 lên 10
               ),
               cellStyle: pw.TextStyle(
                 font: ttf,
-                fontSize: 10, // Tăng từ 8 lên 9
+                fontSize: 12, // Tăng từ 8 lên 9
               ),
 
               // ✅ Thêm padding cho cells
@@ -158,7 +391,7 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
                 1: const pw.FixedColumnWidth(60),
                 2: const pw.FixedColumnWidth(80),
                 3: const pw.FixedColumnWidth(70),
-                4: const pw.FixedColumnWidth(50),
+                4: const pw.FixedColumnWidth(70),
                 5: const pw.FixedColumnWidth(100),
                 6: const pw.FixedColumnWidth(80),
                 7: const pw.FixedColumnWidth(120),
@@ -213,14 +446,13 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
                       person.code ?? 'N/A',
                       person.name,
                       person.dateOfBirth,
-                      person.gender,
-                      // ✅ Cắt ngắn địa chỉ nếu quá dài
-                      (person.address.length ?? 0) > 20
+                      person.gender, // ✅ Cắt ngắn địa chỉ nếu quá dài
+                      person.address.length > 20
                           ? '${person.address.substring(0, 20)}...'
                           : person.address,
                       person.phone,
                       // ✅ Cắt ngắn email nếu quá dài
-                      (person.email.length ?? 0) > 25
+                      person.email.length > 25
                           ? '${person.email.substring(0, 25)}...'
                           : person.email,
                       personDept.name,
@@ -271,10 +503,12 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
         build: (context) => pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.Text('BÁO CÁO BẢNG LƯƠNG NHÂN SỰ',
-                textAlign: pw.TextAlign.center,
-                style: pw.TextStyle(
-                    fontSize: 18, font: ttf, fontWeight: pw.FontWeight.bold)),
+            pw.Center(
+              child: pw.Text('BÁO CÁO BẢNG LƯƠNG NHÂN SỰ',
+                  textAlign: pw.TextAlign.center,
+                  style: pw.TextStyle(
+                      fontSize: 18, font: ttf, fontWeight: pw.FontWeight.bold)),
+            ),
             pw.SizedBox(height: 10),
             pw.Text('Ngày xuất báo cáo: ${dateFormatter.format(now)}',
                 style: pw.TextStyle(font: ttf)),
@@ -306,11 +540,11 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
               headerStyle: pw.TextStyle(
                 font: ttf,
                 fontWeight: pw.FontWeight.bold,
-                fontSize: 11,
+                fontSize: 13,
               ),
               cellStyle: pw.TextStyle(
                 font: ttf,
-                fontSize: 10,
+                fontSize: 12,
               ),
               cellPadding: const pw.EdgeInsets.all(3),
               columnWidths: {
@@ -360,18 +594,10 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
 
                     return [
                       (index + 1).toString(),
-                      salary.code ?? 'N/A',
-                      employee?.name ?? 'N/A',
-                      // ignore: unnecessary_null_comparison
-                      salary.baseSalary != null
-                          ? '${formatter.format(salary.baseSalary)} VNĐ'
-                          : 'N/A',
-                      salary.kpiBonus != null
-                          ? '${formatter.format(salary.kpiBonus)} VNĐ'
-                          : 'N/A',
-                      salary.rewardBonus != null
-                          ? '${formatter.format(salary.rewardBonus)} VNĐ'
-                          : 'N/A',
+                      salary.code ?? 'N/A', employee?.name ?? 'N/A',
+                      '${formatter.format(salary.baseSalary)} VNĐ',
+                      '${formatter.format(salary.kpiBonus)} VNĐ',
+                      '${formatter.format(salary.rewardBonus)} VNĐ',
                       // ignore: unnecessary_null_comparison
                       salary.disciplinaryDeduction != null
                           ? '${formatter.format(salary.disciplinaryDeduction)} VNĐ'
@@ -440,6 +666,7 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       )),
+
               const Gap(20),
               Text(
                 'Chọn loại báo cáo bạn muốn xuất',
@@ -449,9 +676,35 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
                     ),
               ),
               const Gap(16),
+              // Hiển thị thông báo quyền hạn
+              if (availableReports.length == 1 && userRole == 'Employee')
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline, color: Colors.orange, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Bạn chỉ có quyền xem báo cáo chấm công',
+                          style: TextStyle(
+                            color: Colors.orange[800],
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               DropdownButtonFormField<String>(
                 value: selectedReport,
-                items: reportTypes
+                items: availableReports
                     .map((type) => DropdownMenuItem(
                           value: type,
                           child: Text(type),

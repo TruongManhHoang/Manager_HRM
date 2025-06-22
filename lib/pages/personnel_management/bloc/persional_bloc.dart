@@ -71,7 +71,7 @@ class PersionalBloc extends Bloc<PersionalEvent, PersionalState> {
         emit(state.copyWith(
           isLoading: false,
           isSuccess: true,
-          personnel: allPersonnel, // ✅ Trả về danh sách gốc
+          personnel: allPersonnel,
         ));
         return;
       }
@@ -88,19 +88,20 @@ class PersionalBloc extends Bloc<PersionalEvent, PersionalState> {
             normalizedName.contains(normalizedQuery);
 
         // ✅ Tìm kiếm theo mã nhân viên (có dấu và không dấu)
-        final originalCode = (p.code ?? '').toLowerCase();
-        final normalizedCode = removeDiacritics(p.code ?? '');
-        final codeMatch = originalCode.contains(event.query.toLowerCase()) ||
-            normalizedCode.contains(normalizedQuery);
+        // final originalCode = (p.code ?? '').toLowerCase();
+        // final normalizedCode = removeDiacritics(p.code ?? '');
+        // final codeMatch = originalCode.contains(event.query.toLowerCase()) ||
+        //     normalizedCode.contains(normalizedQuery);
 
         // ✅ Tìm kiếm theo email (nếu có)
-        final emailMatch =
-            (p.email ?? '').toLowerCase().contains(event.query.toLowerCase());
+        // final emailMatch =
+        //     (p.email ?? '').toLowerCase().contains(event.query.toLowerCase());
 
         // ✅ Tìm kiếm theo số điện thoại (nếu có)
-        final phoneMatch = (p.phone ?? '').contains(event.query);
+        // final phoneMatch = (p.phone ?? '').contains(event.query);
 
-        return nameMatch || codeMatch || emailMatch || phoneMatch;
+        // return nameMatch || codeMatch || emailMatch || phoneMatch;
+        return nameMatch;
       }).toList();
 
       emit(state.copyWith(

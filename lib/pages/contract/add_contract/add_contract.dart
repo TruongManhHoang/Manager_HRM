@@ -312,6 +312,13 @@ class AddContract extends StatelessWidget {
                                                                 .parse(
                                                                     endDateController
                                                                         .text),
+                                                            employeeName: persionals
+                                                                .firstWhere(
+                                                                    (personal) =>
+                                                                        personal
+                                                                            .id ==
+                                                                        selectPersonalId)
+                                                                .name,
                                                           );
 
                                                           // Process data

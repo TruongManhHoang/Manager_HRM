@@ -663,8 +663,8 @@ class DashBoardDesktopPage extends StatelessWidget {
                                                 width: 200,
                                                 child: PieChart(
                                                   PieChartData(
-                                                    sectionsSpace: 2,
-                                                    centerSpaceRadius: 40,
+                                                    sectionsSpace: 0,
+                                                    centerSpaceRadius: 60,
                                                     sections: [
                                                       ..._buildContractPieSections(
                                                           contractList),

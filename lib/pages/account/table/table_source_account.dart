@@ -10,6 +10,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconsax/iconsax.dart';
 import '../../../constants/colors.dart';
 
 import '../../../utils/helpers/helper_functions.dart';
@@ -104,7 +105,7 @@ class TableSourceAccount extends DataTableSource {
                   extra: account,
                 );
               },
-              icon: const Icon(Icons.edit),
+              icon: const Icon(Iconsax.edit),
               color: TColors.primary,
             ),
             const SizedBox(width: TSizes.xs),
@@ -112,7 +113,7 @@ class TableSourceAccount extends DataTableSource {
               onPressed: () {
                 _confirmDelete(context, account);
               },
-              icon: const Icon(Icons.delete),
+              icon: const Icon(Iconsax.trash),
               color: Colors.red,
             ),
           ],

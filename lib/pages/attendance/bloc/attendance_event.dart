@@ -16,6 +16,17 @@ class UpdateAttendance extends AttendanceEvent {
   UpdateAttendance(this.attendance);
 }
 
+class SearchAttendance extends AttendanceEvent {
+  final String query;
+  SearchAttendance(this.query);
+}
+
+class FilterAttendance extends AttendanceEvent {
+  final int month;
+  final int year;
+  FilterAttendance({required this.month, required this.year});
+}
+
 class DeleteAttendance extends AttendanceEvent {
   final String id;
   final String userId;

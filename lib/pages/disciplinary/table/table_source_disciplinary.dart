@@ -11,6 +11,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import '../../../constants/colors.dart';
 
@@ -114,7 +115,7 @@ class DisciplinaryTableRows extends DataTableSource {
                   context.read<DisciplinaryBloc>().add(LoadDisciplinary());
                 }
               },
-              icon: const Icon(Icons.edit),
+              icon: const Icon(Iconsax.edit),
               color: TColors.primary,
             ),
             const SizedBox(width: TSizes.xs),
@@ -122,7 +123,7 @@ class DisciplinaryTableRows extends DataTableSource {
               onPressed: () {
                 _confirmDelete(context, disciplinary);
               },
-              icon: const Icon(Icons.delete),
+              icon: const Icon(Iconsax.trash),
               color: Colors.red,
             ),
           ],

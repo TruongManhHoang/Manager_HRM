@@ -86,31 +86,23 @@ class _SalaryPageDesktopState extends State<SalaryPageDesktop> {
                           ),
                         ),
                         const Gap(TSizes.spaceBtwItems),
-                        BlocBuilder<SalaryBloc, SalaryState>(
-                          builder: (context, state) {
-                            final salaries = state is SalaryLoaded
-                                ? state.salaries
-                                : <SalaryModel>[];
+                        DropdownMenu<String>(
+                          width: 200,
+                          initialSelection: selectedMonth,
+                          hintText: 'Chọn tháng',
+                          trailingIcon: const Icon(Icons.arrow_drop_down),
+                          dropdownMenuEntries: _buildMonthEntries(),
+                          onSelected: (value) {
+                            if (value != null) {
+                              setState(() {
+                                selectedMonth = value;
+                              });
 
-                            return DropdownMenu<String>(
-                              width: 200,
-                              initialSelection: selectedMonth,
-                              hintText: 'Chọn tháng',
-                              trailingIcon: const Icon(Icons.arrow_drop_down),
-                              dropdownMenuEntries: _buildMonthEntries(),
-                              onSelected: (value) {
-                                if (value != null) {
-                                  setState(() {
-                                    selectedMonth = value;
-                                  });
-
-                                  // Trigger filter event
-                                  context.read<SalaryBloc>().add(
-                                        FilterSalaryEvent(value),
-                                      );
-                                }
-                              },
-                            );
+                              // Trigger filter event
+                              context.read<SalaryBloc>().add(
+                                    FilterSalaryEvent(value),
+                                  );
+                            }
                           },
                         ),
                         Spacer(),

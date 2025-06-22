@@ -51,14 +51,14 @@ class EditAccountPage extends StatelessWidget {
       if (state is AccountSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Thêm tài khoản thành công'),
+            content: Text('Sửa tài khoản thành công'),
           ),
         );
         context.go(RouterName.accountPage);
       } else if (state is AccountError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Thêm tài khoản thất bại: ${state.message}'),
+            content: Text('Sửa tài khoản thất bại: ${state.message}'),
           ),
         );
       }

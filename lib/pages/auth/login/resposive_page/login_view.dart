@@ -18,6 +18,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passWordController = TextEditingController();
+  bool isLoggingIn = false; // Track login state
 
   String? emailError;
   String? passwordError;
@@ -47,83 +48,104 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is AuthSuccess) {
+          if (state is AuthLoading && isLoggingIn) {
+            // Keep loading state only during login
+          } else if (state is AuthSuccess) {
+            setState(() => isLoggingIn = false);
             context.go(RouterName.splashScreen);
           } else if (state is AuthFailure) {
+            setState(() => isLoggingIn = false);
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.message)));
+          } else {
+            setState(() => isLoggingIn = false);
           }
         },
         builder: (context, state) {
-          return Center(
-            child: SizedBox(
-              width: 300,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('HRM',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 25),
-                  TextFormField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      label: const Text('Email'),
-                      errorText: emailError,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    onChanged: validateEmail,
-                  ),
-                  const SizedBox(height: 25),
-                  TextFormField(
-                    controller: passWordController,
-                    decoration: InputDecoration(
-                      label: const Text('Password'),
-                      errorText: passwordError,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    obscureText: true,
-                    onChanged: validatePassword,
-                  ),
-                  //forgot password
-                  const SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        context.go(RouterName.forgotPassword);
-                      },
-                      child: const Text("Quên mật khẩu?"),
-                    ),
-                  ),
-                  const SizedBox(height: 25),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 47, 141, 212),
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(307, 50),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9)),
-                    ),
-                    onPressed: () {
-                      validateEmail(emailController.text.trim());
-                      validatePassword(passWordController.text.trim());
+          return Stack(
+            children: [
+              Center(
+                child: SizedBox(
+                  width: 300,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('HRM',
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 25),
+                      TextFormField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          label: const Text('Email'),
+                          errorText: emailError,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                        onChanged: validateEmail,
+                      ),
+                      const SizedBox(height: 25),
+                      TextFormField(
+                        controller: passWordController,
+                        decoration: InputDecoration(
+                          label: const Text('Password'),
+                          errorText: passwordError,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                        obscureText: true,
+                        onChanged: validatePassword,
+                      ),
+                      //forgot password
+                      const SizedBox(height: 10),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {
+                            context.go(RouterName.forgotPassword);
+                          },
+                          child: const Text("Quên mật khẩu?"),
+                        ),
+                      ),
+                      const SizedBox(height: 25),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 47, 141, 212),
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(307, 50),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(9)),
+                        ),
+                        onPressed: () {
+                          validateEmail(emailController.text.trim());
+                          validatePassword(passWordController.text.trim());
 
-                      if (emailError == null && passwordError == null) {
-                        context.read<AuthBloc>().add(LoginRequested(
-                              emailController.text.trim(),
-                              passWordController.text.trim(),
-                            ));
-                      }
-                    },
-                    child: const Text("Đăng nhập"),
+                          if (emailError == null && passwordError == null) {
+                            setState(() => isLoggingIn = true);
+                            context.read<AuthBloc>().add(LoginRequested(
+                                  emailController.text.trim(),
+                                  passWordController.text.trim(),
+                                ));
+                          }
+                        },
+                        child: const Text("Đăng nhập"),
+                      ),
+                      const SizedBox(height: 40),
+                    ],
                   ),
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
+                ),
+              ), // Loading overlay - only show during login process
+              if (state is AuthLoading && isLoggingIn)
+                Container(
+                  color: Colors.black.withOpacity(0.1),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+            ],
           );
         },
       ),

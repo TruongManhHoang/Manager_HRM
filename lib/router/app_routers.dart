@@ -47,6 +47,7 @@ import 'package:admin_hrm/pages/kpi/kpi_page.dart';
 import 'package:admin_hrm/pages/disciplinary/add_disciplinary_page/add_disciplinary_page.dart';
 import 'package:admin_hrm/pages/disciplinary/edit_disciplinary_page/edit_disciplinary_page.dart';
 import 'package:admin_hrm/pages/personnel_management/person_detail/person_detail_page.dart';
+import 'package:admin_hrm/pages/personnel_management/person_detail/person_detail_page_accounting.dart';
 import 'package:admin_hrm/pages/personnel_management/person_detail/person_detail_page_user.dart';
 
 import 'package:admin_hrm/pages/personnel_management/personnel_page.dart';
@@ -210,6 +211,35 @@ class AppRouter {
                 ),
               ],
               child: const PersonDetailPageUser(),
+            );
+          },
+        ),
+        GoRoute(
+          path: RouterName.employeeDetailAccountingPage,
+          name: RouterName.employeeDetailAccountingPage,
+          builder: (context, state) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => PersionalBloc(
+                    personnelRepository: getIt<PersionalRepository>(),
+                    departmentRepository: getIt<DepartmentRepository>(),
+                    globalStorage: getIt<GlobalStorage>(),
+                  )..add(const PersonalFetchEvent()),
+                ),
+                BlocProvider(
+                  create: (context) =>
+                      AccountBloc(repository: getIt<AccountRepository>()),
+                ),
+                BlocProvider(
+                  create: (context) => AuthBloc(
+                    authService: getIt<AuthService>(),
+                    userRepository: getIt<UserRepository>(),
+                    globalStorage: getIt<GlobalStorage>(),
+                  ),
+                ),
+              ],
+              child: const PersonDetailPageAccounting(),
             );
           },
         ),
@@ -543,6 +573,7 @@ class AppRouter {
             return const ReportPage();
           },
         ),
+
         ShellRoute(
             builder: (context, state, child) {
               return BlocProvider(

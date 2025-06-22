@@ -27,6 +27,8 @@ class ContractModel {
   final DateTime? updatedAt;
   @HiveField(10)
   final String? status;
+  @HiveField(11)
+  final String? employeeName;
 
   Map<String, dynamic> toMap() {
     return {
@@ -41,6 +43,7 @@ class ContractModel {
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
       'status': status,
+      'employeeName': employeeName,
     };
   }
 
@@ -56,6 +59,7 @@ class ContractModel {
     this.createdAt,
     this.updatedAt,
     this.status,
+    this.employeeName,
   });
 
   factory ContractModel.fromJson(
@@ -80,6 +84,7 @@ class ContractModel {
           ? DateTime.parse(json['updatedAt'])
           : null),
       status: json['status'] ?? '',
+      employeeName: json['employeeName'] ?? '',
     );
   }
 
@@ -95,6 +100,7 @@ class ContractModel {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'status': status,
+      'employeeName': employeeName,
     };
   }
 
@@ -110,6 +116,7 @@ class ContractModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     String? status,
+    String? employeeName,
   }) {
     return ContractModel(
       id: id ?? this.id,
@@ -123,6 +130,7 @@ class ContractModel {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       status: status ?? this.status,
+      employeeName: employeeName ?? this.employeeName,
     );
   }
 

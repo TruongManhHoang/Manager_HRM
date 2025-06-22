@@ -14,8 +14,8 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 
-class SidebarUser extends StatelessWidget {
-  const SidebarUser({super.key});
+class SidebarAccounting extends StatelessWidget {
+  const SidebarAccounting({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +59,15 @@ class SidebarUser extends StatelessWidget {
                     const MenuItem(
                         icon: Iconsax.profile_2user,
                         title: 'Thông tin nhân viên',
-                        router: RouterName.employeeDetailUserPage),
+                        router: RouterName.employeeDetailAccountingPage),
                     const MenuItem(
                         icon: Iconsax.wallet,
                         title: 'Bảng lương',
-                        router: RouterName.employeeSalaryPage),
-
+                        router: RouterName.salaryPage),
+                    const MenuItem(
+                        icon: Iconsax.document1,
+                        title: 'Xuất báo cáo',
+                        router: RouterName.reportPage),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: Row(
