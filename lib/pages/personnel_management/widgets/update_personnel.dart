@@ -93,7 +93,7 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
           } else if (state.isFailure) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 backgroundColor: Colors.red,
-                content: Text("Lỗi ! Cập nhập thành viên không thành công.",
+                content: Text("Cập nhập thành viên không thành công.",
                     style: TextStyle(color: Colors.white))));
             context.pop();
           }
@@ -146,6 +146,7 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                                         hint: 'Nhập mã nhân viên',
                                         controller: codeController,
                                       ),
+                                      const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'Họ tên',
@@ -287,8 +288,8 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                                       TDropDownMenu(
                                         menus: const [
                                           'Đang làm việc',
-                                          'Ngừng làm việc'
-                                              'Nghỉ việc',
+                                          'Ngừng làm việc',
+                                          'Nghỉ việc',
                                         ],
                                         controller: statusController,
                                         text: 'Trạng thái',
@@ -364,8 +365,13 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                                                           "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
                                                       createdAt: widget
                                                           .employee.createdAt,
-                                                      updatedAt:
-                                                          DateTime.now());
+                                                      updatedAt: DateTime.now(),
+                                                      positionName: widget
+                                                          .employee
+                                                          .positionName,
+                                                      departmentName: widget
+                                                          .employee
+                                                          .departmentName);
                                                   context
                                                       .read<PersionalBloc>()
                                                       .add(PersionalUpdateEvent(

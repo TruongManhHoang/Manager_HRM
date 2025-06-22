@@ -14,6 +14,8 @@ class PersionalManagement {
   String? avatar;
   DateTime? createdAt;
   DateTime? updatedAt;
+  String? positionName;
+  String? departmentName;
   PersionalManagement({
     this.id,
     required this.code,
@@ -30,6 +32,8 @@ class PersionalManagement {
     this.avatar,
     this.createdAt,
     this.updatedAt,
+    this.positionName,
+    this.departmentName,
   });
   PersionalManagement copyWith({
     String? id,
@@ -47,6 +51,8 @@ class PersionalManagement {
     String? avatar,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? positionName,
+    String? departmentName,
   }) {
     return PersionalManagement(
       id: id ?? this.id,
@@ -64,6 +70,8 @@ class PersionalManagement {
       avatar: avatar ?? this.avatar,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      positionName: positionName ?? this.positionName,
+      departmentName: departmentName ?? this.departmentName,
     );
   }
 
@@ -84,6 +92,8 @@ class PersionalManagement {
       'avatar': avatar,
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
+      'positionName': positionName,
+      'departmentName': departmentName,
     };
   }
 
@@ -106,6 +116,8 @@ class PersionalManagement {
           map['createdAt'] != null ? DateTime.tryParse(map['createdAt']) : null,
       updatedAt:
           map['updatedAt'] != null ? DateTime.tryParse(map['updatedAt']) : null,
+      positionName: map['positionName'] ?? '',
+      departmentName: map['departmentName'] ?? '',
     );
   }
 

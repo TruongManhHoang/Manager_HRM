@@ -45,7 +45,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await globalStorage.addPersonalModel(personal);
         emit(AuthSuccess(appUser));
       } catch (e) {
-        emit(AuthFailure(e.toString()));
+        emit(AuthFailure('Đăng nhập thất bại'));
       }
     });
 

@@ -2,6 +2,7 @@ import 'package:admin_hrm/common/widgets/breadcrumb/t_breadcrums_with_heading.da
 import 'package:admin_hrm/common/widgets/method/method.dart';
 import 'package:admin_hrm/constants/sizes.dart';
 import 'package:admin_hrm/pages/attendance/bloc/attendance_bloc.dart';
+import 'package:admin_hrm/pages/attendance/bloc/attendance_event.dart';
 import 'package:admin_hrm/pages/attendance/bloc/attendance_state.dart';
 import 'package:admin_hrm/pages/attendance/table/data_table_attendance.dart';
 import 'package:admin_hrm/router/routers_name.dart';
@@ -10,8 +11,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-class AttendancePageMobile extends StatelessWidget {
+class AttendancePageMobile extends StatefulWidget {
   const AttendancePageMobile({super.key});
+
+  @override
+  State<AttendancePageMobile> createState() => _AttendancePageMobileState();
+}
+
+class _AttendancePageMobileState extends State<AttendancePageMobile> {
+  String? selectedMonth = "all";
+
+  List<DropdownMenuEntry<String>> _buildMonthEntries() {
+    final currentYear = DateTime.now().year;
+    final List<DropdownMenuEntry<String>> entries = [];
+
+    entries.add(const DropdownMenuEntry<String>(
+      value: "all",
+      label: "Tất cả tháng",
+    ));
+
+    for (int month = 1; month <= 12; month++) {
+      final monthKey = "$currentYear-${month.toString().padLeft(2, '0')}";
+      entries.add(DropdownMenuEntry<String>(
+        value: monthKey,
+        label: "Tháng $month/$currentYear",
+      ));
+    }
+
+    return entries;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +52,6 @@ class AttendancePageMobile extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                const TBreadcrumsWithHeading(
-                  heading: 'Chấm Công',
-                  breadcrumbItems: [],
-                ),
                 const Row(
                   children: [
                     Text(
@@ -45,22 +69,53 @@ class AttendancePageMobile extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                            ),
-                            onPressed: () {
-                              context.pushNamed(RouterName.addAttendance);
-                            },
-                            child: Text(
-                              'Thêm Chấm Công',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: Colors.white),
-                            ),
+                          SizedBox(
+                            width: 300,
+                            child: TextFormField(
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  labelText: 'Tìm kiếm nhân viên',
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.search),
+                                ),
+                                onChanged: (value) {
+                                  context
+                                      .read<AttendanceBloc>()
+                                      .add(SearchAttendance(value));
+                                }),
                           ),
-                          const Gap(10),
+                          const Gap(TSizes.spaceBtwItems),
+                          DropdownMenu<String>(
+                            width: 200,
+                            initialSelection: selectedMonth,
+                            hintText: 'Chọn tháng',
+                            trailingIcon: const Icon(Icons.arrow_drop_down),
+                            dropdownMenuEntries: _buildMonthEntries(),
+                            onSelected: (value) {
+                              if (value != null) {
+                                setState(() {
+                                  selectedMonth = value;
+                                });
+
+                                if (value == "all") {
+                                  context
+                                      .read<AttendanceBloc>()
+                                      .add(LoadAttendances());
+                                } else {
+                                  final parts =
+                                      value.split('-'); // value dạng "2025-07"
+                                  final year = int.parse(parts[0]);
+                                  final month = int.parse(parts[1]);
+                                  context.read<AttendanceBloc>().add(
+                                        FilterAttendance(
+                                            month: month, year: year),
+                                      );
+                                }
+                              }
+                            },
+                          ),
+                          const Spacer(),
                           BlocBuilder<AttendanceBloc, AttendanceState>(
                             builder: (context, state) {
                               if (state is AttendanceLoaded) {
@@ -70,6 +125,7 @@ class AttendancePageMobile extends StatelessWidget {
                                   ),
                                   onPressed: () {
                                     exportDynamicExcel(
+                                      fileName: 'Danh sách chấm công',
                                       headers: [
                                         'Mã chấm công',
                                         'Mã nhân viên',

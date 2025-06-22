@@ -111,8 +111,6 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
         });
         if (imageUrl != null) {
           print("✅ Uploaded Image URL: $imageUrl");
-
-          // 🔥 Lưu imageUrl này vào Firestore hoặc Realtime Database tùy bạn
         }
       }
     }
@@ -132,7 +130,7 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
           } else if (state.isFailure) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 backgroundColor: Colors.red,
-                content: Text("Lỗi ! Thêm thành viên không thành công.",
+                content: Text("Thêm thành viên không thành công.",
                     style: TextStyle(color: Colors.white))));
             context.pop();
           }
@@ -367,8 +365,8 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
                                           text: 'Trạng thái',
                                           menus: const [
                                             'Đang làm việc',
-                                            'Ngừng làm việc'
-                                                'Nghỉ việc',
+                                            'Ngừng làm việc',
+                                            'Nghỉ việc',
                                           ],
                                           controller: statusController),
                                       const Gap(TSizes.spaceBtwSections),
@@ -441,6 +439,16 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
                                                             .text,
                                                         date:
                                                             "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
+                                                        positionName: positions
+                                                            .firstWhere((p) =>
+                                                                p.id ==
+                                                                selectedPositionId)
+                                                            .name,
+                                                        departmentName: departments
+                                                            .firstWhere((d) =>
+                                                                d.id ==
+                                                                selectedDepartmentId)
+                                                            .name,
                                                       );
                                                       context
                                                           .read<PersionalBloc>()

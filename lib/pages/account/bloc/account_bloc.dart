@@ -49,6 +49,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   Future<void> _onAddAccount(
       AddAccount event, Emitter<AccountState> emit) async {
+    emit(AccountLoading());
     try {
       debugPrint('Adding account: ${event.account}');
       await repository.addAccount(event.account);
@@ -62,8 +63,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
   Future<void> _onUpdateAccount(
       UpdateAccount event, Emitter<AccountState> emit) async {
+    emit(AccountLoading());
     try {
-      debugPrint('Updating account: ${event.account}');
       await repository.updateAccount(event.account);
       emit(AccountSuccess());
       add(LoadAccounts());

@@ -108,12 +108,12 @@ class TableEmployeeRows extends DataTableSource {
         DataCell(Padding(
           padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
           child: Center(
-            child: Text(position.name!, style: baseStyle),
+            child: Text(employee.positionName!, style: baseStyle),
           ),
         )),
         DataCell(Center(
           child: Text(
-            department.name,
+            employee.departmentName!,
             style: Theme.of(context).textTheme.bodyLarge!,
           ),
         )),

@@ -40,6 +40,10 @@ class _SplashScreenState extends State<SplashScreen> {
         context.go(
           RouterName.employeeDetailUserPage,
         );
+      } else if (storageKey.role == 'accounting') {
+        context.go(
+          RouterName.employeeDetailAccountingPage,
+        );
       } else {
         context.go(RouterName.login);
       }

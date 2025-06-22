@@ -57,17 +57,17 @@ class _AddAccountPageState extends State<AddAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthBloc, AuthState>(
+    return BlocConsumer<AccountBloc, AccountState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        if (state is AccountSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Thêm tài khoản thành công')),
           );
           context.read<AccountBloc>().add(LoadAccounts());
           context.go(RouterName.accountPage);
-        } else if (state is AuthFailure) {
+        } else if (state is AccountError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Lỗi: ${state.message}')),
+            SnackBar(content: Text('Thêm tài khoản thất bại')),
           );
         }
       },
