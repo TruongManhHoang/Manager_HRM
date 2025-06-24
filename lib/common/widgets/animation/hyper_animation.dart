@@ -42,7 +42,7 @@ class HyperLoader {
       builder: (context) => Material(
         color: Colors.transparent,
         child: PopScope(
-          onPopInvokedWithResult: (didPop, result) {
+          onPopInvoked: (didPop) {
             if (didPop) {
               hide();
             }

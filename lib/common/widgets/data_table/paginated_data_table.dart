@@ -80,7 +80,7 @@ class TPaginatedDataTable extends StatelessWidget {
           onRowsPerPageChanged: (noOfRows) {},
           sortColumnIndex: sortColumnIndex,
           headingTextStyle: Theme.of(context).textTheme.titleMedium,
-          headingRowColor: WidgetStateProperty.resolveWith(
+          headingRowColor: MaterialStateProperty.resolveWith(
               (states) => TColors.primaryBackground),
           empty: const TAnimationLoaderWidget(
               animation: AppAsset.packageAnimation,
