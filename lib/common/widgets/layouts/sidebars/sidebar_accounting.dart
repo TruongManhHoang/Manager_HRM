@@ -46,6 +46,27 @@ class SidebarAccounting extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Center(
+                      child: Container(
+                        width: 100,
+                        height: 30,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: TSizes.sm,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(TSizes.sm),
+                        ),
+                        child: Text(
+                          storageKey.role ?? 'Chưa cập nhật',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .apply(color: Colors.green),
+                        ),
+                      ),
+                    ),
                     Text(
                       'Danh sách',
                       style: Theme.of(context)

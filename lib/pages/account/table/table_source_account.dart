@@ -4,8 +4,6 @@ import 'package:admin_hrm/di/locator.dart';
 import 'package:admin_hrm/local/hive_storage.dart';
 import 'package:admin_hrm/pages/account/bloc/account_bloc.dart';
 
-import 'package:admin_hrm/router/routers_name.dart';
-
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -100,8 +98,8 @@ class TableSourceAccount extends DataTableSource {
           children: [
             IconButton(
               onPressed: () async {
-                context.push(
-                  RouterName.editAccount,
+                context.go(
+                  '/account-page/edit-account',
                   extra: account,
                 );
               },

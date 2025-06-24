@@ -32,17 +32,6 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
                   onPressed: () => scaffoldKey?.currentState?.openDrawer(),
                   icon: const Icon(Iconsax.menu))
               : null,
-          title: TDeviceUtils.isDesktopScreen(context)
-              ? SizedBox(
-                  width: 400,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Iconsax.search_normal),
-                      hintText: 'Search anything...',
-                    ),
-                  ),
-                )
-              : null,
           actions: [
             //Search bar for mobile and tablet
             if (!TDeviceUtils.isDesktopScreen(context))

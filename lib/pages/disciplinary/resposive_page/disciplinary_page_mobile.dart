@@ -2,11 +2,8 @@ import 'package:admin_hrm/common/widgets/breadcrumb/t_breadcrums_with_heading.da
 import 'package:admin_hrm/common/widgets/method/method.dart';
 import 'package:admin_hrm/constants/sizes.dart';
 import 'package:admin_hrm/pages/disciplinary/bloc/disciplinary_bloc.dart';
-import 'package:admin_hrm/pages/disciplinary/bloc/disciplinary_event.dart';
 import 'package:admin_hrm/pages/disciplinary/bloc/disciplinary_state.dart';
 import 'package:admin_hrm/pages/disciplinary/table/data_table_disciplinary.dart';
-
-import 'package:admin_hrm/router/routers_name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -50,14 +47,8 @@ class DisciplinaryPageMobile extends StatelessWidget {
                             style: TextButton.styleFrom(
                               backgroundColor: Colors.blue,
                             ),
-                            onPressed: () async {
-                              final result = await context
-                                  .push(RouterName.addDisciplinary);
-                              if (result == true) {
-                                context
-                                    .read<DisciplinaryBloc>()
-                                    .add(LoadDisciplinary());
-                              }
+                            onPressed: () {
+                              context.go('/disciplinary-page/add-disciplinary');
                             },
                             child: Text(
                               'Thêm kỷ luật',

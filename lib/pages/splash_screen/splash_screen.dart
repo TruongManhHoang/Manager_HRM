@@ -33,17 +33,20 @@ class _SplashScreenState extends State<SplashScreen> {
     //Navigator
     Timer(const Duration(seconds: 3), () {
       final storageKey = getIt<GlobalStorage>();
-      final personal = storageKey.personalModel;
-      if (storageKey.role == 'admin') {
+      final userRole = storageKey.role?.toLowerCase().trim() ?? '';
+
+      if (userRole == 'admin') {
+        debugPrint('Debug - Navigating to dashboard');
         context.go(RouterName.dashboard);
-      } else if (storageKey.role == 'user') {
-        context.go(
-          RouterName.employeeDetailUserPage,
-        );
-      } else if (storageKey.role == 'accounting') {
-        context.go(
-          RouterName.employeeDetailAccountingPage,
-        );
+      } else if (userRole == 'user' || userRole == 'nhân viên') {
+        debugPrint('Debug - Navigating to user page');
+        context.go(RouterName.employeeDetailUserPage);
+      } else if (userRole == 'kế toán') {
+        debugPrint('Debug - Navigating to accounting page');
+        context.go(RouterName.employeeDetailAccountingPage);
+      } else if (userRole == 'quản lý') {
+        debugPrint('Debug - Navigating to manager page');
+        context.go(RouterName.employeeDetailAccountingPage);
       } else {
         context.go(RouterName.login);
       }

@@ -26,8 +26,19 @@ class DataTableSalary extends StatelessWidget {
           return TPaginatedDataTable(
             minWidth: 700,
             tableHeight: 500,
-            dataRowHeight: TSizes.xl * 1.45,
+            rowsPerPage: 5,
+            dataRowHeight: 65,
             columns: [
+              DataColumn2(
+                label: Center(
+                  child: Text('STT',
+                      maxLines: 2,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: baseStyle),
+                ),
+                fixedWidth: 60, // Cố định chiều rộng nếu muốn
+              ),
               DataColumn2(
                 label: Center(
                   child: Text('Mã bảng lương',

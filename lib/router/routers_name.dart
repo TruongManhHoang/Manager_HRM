@@ -4,34 +4,37 @@ class RouterName {
   static const dashboard = '/dashboard-page';
   static const commentManager = '/comment-manager-page';
   static const login = '/login';
-  static const departmentPage = '/departmentPage';
+  static const departmentPage = '/department-page';
   static const customSidebar = '/customSidebar';
   static const employeeDetailPage = '/employeeDetailPage';
   static const employeeDetailUserPage = "/employeeDetailUserPage";
   static const employeeDetailAccountingPage = "/employeeDetailAccountingPage";
   static const employeePage = '/employee-page';
   static const addEmployee = '/add-employee';
-  static const addDepartment = '/add-department';
+  static const addDepartment =
+      'add-department'; // Nested route, không có dấu "/"
   static const contractPage = '/contract-page';
-  static const addContract = '/add-contract';
-  static const addAccount = '/add-account';
-  static const editAccount = '/edit-account';
-  static const addPosition = '/add-position';
+  static const addContract = 'add-contract'; // Nested route, không có dấu "/"
+  static const addAccount = 'add-account'; // Nested route, không có dấu "/"
+  static const editAccount = 'edit-account'; // Nested route, không có dấu "/"
+  static const addPosition = 'add-position'; // Nested route, không có dấu "/"
 
   static const accountPage = '/account-page';
   static const positionPage = '/position-page';
   static const updateEmployee = '/update-employee';
-  static const editDepartment = '/edit-department';
+  static const editDepartment =
+      'edit-department'; // Nested route, không có dấu "/"
 
   static const rewardPage = '/reward-page';
-  static const editReward = '/edit-reward';
-  static const addReward = '/add-reward';
+  static const editReward = 'edit-reward'; // Nested route, không có dấu "/"
+  static const addReward = 'add-reward'; // Nested route, không có dấu "/"
   static const disciplinaryPage = '/disciplinary-page';
-  static const addDisciplinary = '/add-disciplinary';
-  static const editDisciplinary = '/edit-disciplinary';
-
-  static const editPosition = '/edit-position';
-  static const editContract = '/edit-contract';
+  static const addDisciplinary =
+      'add-disciplinary'; // Nested route, không có dấu "/"
+  static const editDisciplinary =
+      'edit-disciplinary'; // Nested route, không có dấu "/"
+  static const editPosition = 'edit-position'; // Nested route, không có dấu "/"
+  static const editContract = 'edit-contract'; // Nested route, không có dấu "/"
 
   static const attendancePage = '/attendance-page';
   static const addAttendance = 'add-attendance';
@@ -40,11 +43,11 @@ class RouterName {
   static const kpiPage = '/kpi-page';
   static const addKpi = 'add-kpi';
   static const editKpi = 'edit-kpi';
-
   static const salaryPage = '/salary-page';
-  static const addSalary = '/add-salary';
-  static const editSalary = '/edit-salary';
-  static const employeeSalaryPage = '/employee-salary-page';
+  static const addSalary = 'add-salary'; // Nested route, không có dấu "/"
+  static const editSalary = 'edit-salary'; // Nested route, không có dấu "/"
+  static const employeeSalaryPage =
+      'employee-salary'; // Nested route, không có dấu "/"
 
   static const reportPage = '/report-page';
 

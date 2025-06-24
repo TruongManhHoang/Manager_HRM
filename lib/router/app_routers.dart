@@ -75,7 +75,7 @@ import 'package:admin_hrm/pages/reward/reward_page.dart';
 
 import 'package:admin_hrm/pages/salary/add_salary/add_salary_page.dart';
 import 'package:admin_hrm/pages/salary/bloc/salary_bloc.dart';
-import 'package:admin_hrm/pages/salary/edit_deparment/edit_salary.dart';
+import 'package:admin_hrm/pages/salary/edit_salary/edit_salary.dart';
 import 'package:admin_hrm/pages/salary/employee_salary_page.dart';
 import 'package:admin_hrm/pages/salary/salary_page.dart';
 import 'package:admin_hrm/pages/splash_screen/splash_screen.dart';
@@ -257,28 +257,31 @@ class AppRouter {
             },
             routes: [
               GoRoute(
-                path: RouterName.addDepartment,
-                name: RouterName.addDepartment,
+                path: RouterName.departmentPage,
+                name: RouterName.departmentPage,
                 builder: (context, state) {
-                  return const AddDepartmentPage();
+                  return const DepartmentPage();
                 },
+                routes: [
+                  GoRoute(
+                    path: 'add-department', // Nested route
+                    name: RouterName.addDepartment,
+                    builder: (context, state) {
+                      return const AddDepartmentPage();
+                    },
+                  ),
+                  GoRoute(
+                    path: 'edit-department', // Nested route
+                    name: RouterName.editDepartment,
+                    builder: (context, state) {
+                      final department = state.extra as DepartmentModel;
+                      return EditDepartmentPage(
+                        department: department,
+                      );
+                    },
+                  ),
+                ],
               ),
-              GoRoute(
-                path: RouterName.editDepartment,
-                name: RouterName.editDepartment,
-                builder: (context, state) {
-                  final department = state.extra as DepartmentModel;
-                  return EditDepartmentPage(
-                    department: department,
-                  );
-                },
-              ),
-              GoRoute(
-                  path: RouterName.departmentPage,
-                  name: RouterName.departmentPage,
-                  builder: (context, state) {
-                    return const DepartmentPage();
-                  }),
             ]),
         ShellRoute(
             builder: (context, state, child) {
@@ -299,23 +302,25 @@ class AppRouter {
                 builder: (context, state) {
                   return const PositionPage();
                 },
-              ),
-              GoRoute(
-                path: RouterName.addPosition,
-                name: RouterName.addPosition,
-                builder: (context, state) {
-                  return const AddPosition();
-                },
-              ),
-              GoRoute(
-                path: RouterName.editPosition,
-                name: RouterName.editPosition,
-                builder: (context, state) {
-                  final position = state.extra as PositionModel;
-                  return EditPosition(
-                    positionModel: position,
-                  );
-                },
+                routes: [
+                  GoRoute(
+                    path: 'add-position', // Nested route
+                    name: RouterName.addPosition,
+                    builder: (context, state) {
+                      return const AddPosition();
+                    },
+                  ),
+                  GoRoute(
+                    path: 'edit-position', // Nested route
+                    name: RouterName.editPosition,
+                    builder: (context, state) {
+                      final position = state.extra as PositionModel;
+                      return EditPosition(
+                        positionModel: position,
+                      );
+                    },
+                  ),
+                ],
               ),
             ]),
         ShellRoute(
@@ -339,28 +344,28 @@ class AppRouter {
             },
             routes: [
               GoRoute(
-                path: RouterName.accountPage,
+                path: RouterName.accountPage, // '/account-page'
                 name: RouterName.accountPage,
                 builder: (context, state) {
                   return const AccountPage();
                 },
-              ),
-              GoRoute(
-                path: RouterName.addAccount,
-                name: RouterName.addAccount,
-                builder: (context, state) {
-                  return const AddAccountPage();
-                },
-              ),
-              GoRoute(
-                path: RouterName.editAccount,
-                name: RouterName.editAccount,
-                builder: (context, state) {
-                  final account = state.extra as AccountModel;
-                  return EditAccountPage(
-                    accountModel: account,
-                  );
-                },
+                routes: [
+                  GoRoute(
+                    path: 'add-account',
+                    name: RouterName.addAccount,
+                    builder: (context, state) {
+                      return const AddAccountPage();
+                    },
+                  ),
+                  GoRoute(
+                    path: 'edit-account',
+                    name: RouterName.editAccount,
+                    builder: (context, state) {
+                      final account = state.extra as AccountModel;
+                      return EditAccountPage(accountModel: account);
+                    },
+                  ),
+                ],
               ),
             ]),
         ShellRoute(
@@ -382,23 +387,25 @@ class AppRouter {
                 builder: (context, state) {
                   return const ContractPage();
                 },
-              ),
-              GoRoute(
-                path: RouterName.addContract,
-                name: RouterName.addContract,
-                builder: (context, state) {
-                  return const AddContract();
-                },
-              ),
-              GoRoute(
-                path: RouterName.editContract,
-                name: RouterName.editContract,
-                builder: (context, state) {
-                  final contract = state.extra as ContractModel;
-                  return EditContract(
-                    contract: contract,
-                  );
-                },
+                routes: [
+                  GoRoute(
+                    path: 'add-contract', // Nested route
+                    name: RouterName.addContract,
+                    builder: (context, state) {
+                      return const AddContract();
+                    },
+                  ),
+                  GoRoute(
+                    path: 'edit-contract', // Nested route
+                    name: RouterName.editContract,
+                    builder: (context, state) {
+                      final contract = state.extra as ContractModel;
+                      return EditContract(
+                        contract: contract,
+                      );
+                    },
+                  ),
+                ],
               ),
             ]),
         ShellRoute(
@@ -415,32 +422,33 @@ class AppRouter {
           },
           routes: [
             GoRoute(
-              path: RouterName.addReward,
-              name: RouterName.addReward,
-              builder: (context, state) {
-                return const AddRewardPage();
-              },
-            ),
-            GoRoute(
-              path: RouterName.editReward,
-              name: RouterName.editReward,
-              builder: (context, state) {
-                final reward = state.extra as RewardModel;
-                return EditRewardPage(
-                  rewardModel: reward,
-                );
-              },
-            ),
-            GoRoute(
               path: RouterName.rewardPage,
               name: RouterName.rewardPage,
               builder: (context, state) {
                 return RewardPage();
               },
+              routes: [
+                GoRoute(
+                  path: 'add-reward', // Nested route
+                  name: RouterName.addReward,
+                  builder: (context, state) {
+                    return const AddRewardPage();
+                  },
+                ),
+                GoRoute(
+                  path: 'edit-reward', // Nested route
+                  name: RouterName.editReward,
+                  builder: (context, state) {
+                    final reward = state.extra as RewardModel;
+                    return EditRewardPage(
+                      rewardModel: reward,
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
-
         ShellRoute(
             builder: (context, state, child) {
               return BlocProvider<DisciplinaryBloc>(
@@ -455,31 +463,32 @@ class AppRouter {
             },
             routes: [
               GoRoute(
-                path: RouterName.addDisciplinary,
-                name: RouterName.addDisciplinary,
-                builder: (context, state) {
-                  return AddDisciplinaryPage();
-                },
-              ),
-              GoRoute(
                 path: RouterName.disciplinaryPage,
                 name: RouterName.disciplinaryPage,
                 builder: (context, state) {
                   return const DisciplinaryPage();
                 },
-              ),
-              GoRoute(
-                path: RouterName.editDisciplinary,
-                name: RouterName.editDisciplinary,
-                builder: (context, state) {
-                  final disciplinary = state.extra as DisciplinaryModel;
-                  return EditDisciplinaryPage(
-                    disciplinaryModel: disciplinary,
-                  );
-                },
+                routes: [
+                  GoRoute(
+                    path: 'add-disciplinary', // Nested route
+                    name: RouterName.addDisciplinary,
+                    builder: (context, state) {
+                      return AddDisciplinaryPage();
+                    },
+                  ),
+                  GoRoute(
+                    path: 'edit-disciplinary', // Nested route
+                    name: RouterName.editDisciplinary,
+                    builder: (context, state) {
+                      final disciplinary = state.extra as DisciplinaryModel;
+                      return EditDisciplinaryPage(
+                        disciplinaryModel: disciplinary,
+                      );
+                    },
+                  ),
+                ],
               ),
             ]),
-
         ShellRoute(
             builder: (context, state, child) {
               return BlocProvider(
@@ -499,30 +508,32 @@ class AppRouter {
                 builder: (context, state) {
                   return const SalaryPage();
                 },
-              ),
-              GoRoute(
-                path: RouterName.addSalary,
-                name: RouterName.addSalary,
-                builder: (context, state) {
-                  return AddSalaryPage();
-                },
-              ),
-              GoRoute(
-                path: RouterName.editSalary,
-                name: RouterName.editSalary,
-                builder: (context, state) {
-                  final salary = state.extra as SalaryModel;
-                  return EditSalaryPage(
-                    salary: salary,
-                  );
-                },
-              ),
-              GoRoute(
-                path: RouterName.employeeSalaryPage,
-                name: RouterName.employeeSalaryPage,
-                builder: (context, state) {
-                  return const EmployeeSalaryPage();
-                },
+                routes: [
+                  GoRoute(
+                    path: 'add-salary', // Nested route
+                    name: RouterName.addSalary,
+                    builder: (context, state) {
+                      return AddSalaryPage();
+                    },
+                  ),
+                  GoRoute(
+                    path: 'edit-salary', // Nested route
+                    name: RouterName.editSalary,
+                    builder: (context, state) {
+                      final salary = state.extra as SalaryModel;
+                      return EditSalaryPage(
+                        salary: salary,
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'employee-salary', // Nested route
+                    name: RouterName.employeeSalaryPage,
+                    builder: (context, state) {
+                      return const EmployeeSalaryPage();
+                    },
+                  ),
+                ],
               ),
             ]),
 

@@ -28,12 +28,12 @@ class _ReportPageDesktopState extends State<ReportPageDesktop> {
       'Lương',
       'Báo cáo chấm công',
     ],
-    'manager': [
+    'quản lý': [
       'Phòng ban',
       'Nhân viên',
       'Báo cáo chấm công',
     ],
-    'accounting': [
+    'kế toán': [
       'Lương',
     ],
     'employee': [

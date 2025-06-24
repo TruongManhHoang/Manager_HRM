@@ -30,9 +30,9 @@ class DataTablePositon extends StatelessWidget {
           );
         } else if (state.isSuccess) {
           return TPaginatedDataTable(
-            minWidth: 700,
             tableHeight: 500,
             dataRowHeight: TSizes.xl * 1.2,
+            rowsPerPage: 5,
             columns: [
               DataColumn2(
                 label: Center(

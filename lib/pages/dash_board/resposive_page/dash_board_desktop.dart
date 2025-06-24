@@ -28,6 +28,8 @@ class DashBoardDesktopPage extends StatelessWidget {
     int maxCount = 1;
     final int femaleCount = personalList.where((p) => p.gender == 'Nữ').length;
     final int maleCount = personalList.where((p) => p.gender == 'Nam').length;
+    final int restCount =
+        personalList.where((p) => p.status == 'Nghỉ việc').length;
     final int total = femaleCount + maleCount;
     final counts = positionList.map((pos) {
       final count = personalList.where((p) => p.positionId == pos.id).length;
@@ -103,7 +105,7 @@ class DashBoardDesktopPage extends StatelessWidget {
                             RouterName.positionPage,
                             'Xem danh sách tài khoản'),
                         _buildDashboardCard(
-                            '0',
+                            '$restCount',
                             'Nhân viên nghỉ việc',
                             Colors.red,
                             context,

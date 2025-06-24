@@ -58,6 +58,16 @@ class TTextFormField extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0),
                   borderSide: const BorderSide(color: Colors.blue),
                 ),
+                // Tùy chỉnh màu khi disabled
+                filled: true,
+                fillColor: Colors.white,
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide(color: Colors.grey[400]!),
+                ),
+              ),
+              style: TextStyle(
+                color: enabled == false ? Colors.black87 : null,
               ),
               validator: validator),
         ),

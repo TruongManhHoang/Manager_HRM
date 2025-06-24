@@ -19,8 +19,9 @@ class _EmployeePageState extends State<EmployeePage> {
   @override
   Widget build(BuildContext context) {
     final globalStorage = getIt<GlobalStorage>();
-    final role = globalStorage.role ?? 'user';
-    if (role != 'admin') {
+    // final role = globalStorage.role ?? 'user';
+    final userRole = globalStorage.role ?? 'user';
+    if (userRole != 'admin' && userRole != 'quản lý') {
       return Scaffold(
         body: Center(
           child: AlertDialog(

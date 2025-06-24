@@ -3,13 +3,14 @@ import 'package:admin_hrm/common/widgets/drop_down_menu/drop_down_menu.dart';
 import 'package:admin_hrm/common/widgets/layouts/headers/headers.dart';
 import 'package:admin_hrm/common/widgets/layouts/sidebars/sidebar.dart';
 import 'package:admin_hrm/common/widgets/text_form/text_form_field.dart';
+import 'package:admin_hrm/common/widgets/formatter/input_format.dart';
 import 'package:admin_hrm/constants/sizes.dart';
 import 'package:admin_hrm/data/model/contract/contract_model.dart';
 import 'package:admin_hrm/di/locator.dart';
 import 'package:admin_hrm/local/hive_storage.dart';
 import 'package:admin_hrm/pages/contract/bloc/contract_bloc.dart';
-import 'package:admin_hrm/pages/position/add_position/add_position.dart';
 import 'package:admin_hrm/router/routers_name.dart';
+import 'package:admin_hrm/utils/code_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -34,9 +35,17 @@ class AddContract extends StatelessWidget {
       'Chính thức',
       'Thử việc',
     ];
-
     final globalStorage = getIt<GlobalStorage>();
     final persionals = globalStorage.personalManagers;
+
+    // Tự động generate mã hợp đồng
+    final existingContracts = globalStorage.contracts ?? [];
+    final existingCodes =
+        existingContracts.map((c) => c.contractCode ?? '').toList();
+    codeContractController.text = CodeGenerator.generateCode(
+      CodeGenerator.contractPrefix,
+      existingCodes,
+    );
 
     String? selectPersonalId;
     final _globalKey = GlobalKey<FormState>();
@@ -99,10 +108,11 @@ class AddContract extends StatelessWidget {
                                           children: [
                                             TTextFormField(
                                               textAlign: true,
-                                              hint: 'Mã hợp đồng',
+                                              hint: 'Mã được tạo tự động',
                                               text: 'Mã hợp đồng',
                                               controller:
                                                   codeContractController,
+                                              enabled: false,
                                             ),
                                             Gap(TSizes.spaceBtwItems),
                                             Row(
@@ -129,7 +139,7 @@ class AddContract extends StatelessWidget {
                                                               DropdownMenuEntry<
                                                                   String>(
                                                                 label: personal
-                                                                    .name!,
+                                                                    .name,
                                                                 value: personal
                                                                     .id!,
                                                               ))
@@ -150,11 +160,12 @@ class AddContract extends StatelessWidget {
                                             const Gap(TSizes.spaceBtwItems),
                                             TTextFormField(
                                               textAlign: true,
-                                              hint: 'Lương cơ bản',
+                                              hint: 'Nhập lương cơ bản',
                                               text: 'Lương cơ bản',
                                               controller: salaryController,
                                               keyboardType:
                                                   TextInputType.number,
+                                              isFormatted: true,
                                             ),
                                             const Gap(TSizes.spaceBtwItems),
                                             TTextFormField(
@@ -277,15 +288,21 @@ class AddContract extends StatelessWidget {
                                                         if (_globalKey
                                                             .currentState!
                                                             .validate()) {
+                                                          // Debug: In ra giá trị để kiểm tra
+                                                          print(
+                                                              'Salary text: "${salaryController.text}"');
+                                                          final rawSalary =
+                                                              CurrencyInputFormatter
+                                                                  .getRawValue(
+                                                                      salaryController
+                                                                          .text);
+                                                          print(
+                                                              'Raw salary: $rawSalary');
+
                                                           final contract =
                                                               ContractModel(
-                                                            salary: int.tryParse(
-                                                                    salaryController
-                                                                        .text
-                                                                        .replaceAll(
-                                                                            '.',
-                                                                            '')) ??
-                                                                0,
+                                                            salary: rawSalary
+                                                                .toInt(),
                                                             contractCode:
                                                                 codeContractController
                                                                     .text

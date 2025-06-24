@@ -23,12 +23,13 @@ class _DepartmentPageState extends State<ReportPage> {
   Widget build(BuildContext context) {
     final globalStorage = getIt<GlobalStorage>();
     final role = globalStorage.role ?? 'user';
-    if (role != 'admin' && role != 'accounting') {
+    if (role != 'admin' && role != 'kế toán' && role != 'quản lý') {
       return Scaffold(
         body: Center(
           child: AlertDialog(
             title: const Text('Cảnh báo'),
-            content: const Text('Bạn không có quyền truy cập trang này!'),
+            content: Text(
+                'Bạn không có quyền truy cập trang này! Role hiện tại: $role'),
             actions: [
               TextButton(
                 onPressed: () {

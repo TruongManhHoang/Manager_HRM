@@ -25,15 +25,11 @@ class TableEmployeeRows extends DataTableSource {
   DataRow? getRow(int index) {
     TextStyle baseStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
           color: TColors.dark,
+          fontSize: 15,
           fontWeight: FontWeight.w500,
         );
     final globalStorage = getIt<GlobalStorage>();
-    final personalManagers = globalStorage.positions!;
-    final position = personalManagers.firstWhere(
-      (p) => p.id == personnel[index].positionId,
-    );
-    final department = globalStorage.departments!
-        .firstWhere((d) => d.id == personnel[index].departmentId);
+
     final dateFormat = DateFormat('dd/MM/yyyy');
     if (index >= personnel.length) return null;
     final employee = personnel[index];
@@ -52,7 +48,7 @@ class TableEmployeeRows extends DataTableSource {
         DataCell(Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
-            child: Text(employee.code!, style: baseStyle),
+            child: Text(employee.code ?? '', style: baseStyle),
           ),
         )),
         DataCell(Center(
@@ -108,12 +104,12 @@ class TableEmployeeRows extends DataTableSource {
         DataCell(Padding(
           padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
           child: Center(
-            child: Text(employee.positionName!, style: baseStyle),
+            child: Text(employee.positionName ?? '', style: baseStyle),
           ),
         )),
         DataCell(Center(
           child: Text(
-            employee.departmentName!,
+            employee.departmentName ?? '',
             style: Theme.of(context).textTheme.bodyLarge!,
           ),
         )),
@@ -124,15 +120,16 @@ class TableEmployeeRows extends DataTableSource {
               padding: const EdgeInsets.symmetric(
                   horizontal: 6, vertical: TSizes.xs),
               decoration: BoxDecoration(
-                color: THelperFunctions.getPesonalStatusColor(employee.status!)
+                color: THelperFunctions.getPesonalStatusColor(
+                        employee.status ?? 'active')
                     .withOpacity(0.1),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                employee.status!,
+                employee.status ?? 'active',
                 style: baseStyle.copyWith(
                     color: THelperFunctions.getPesonalStatusColor(
-                        employee.status!)),
+                        employee.status ?? 'active')),
               ),
             ),
           ),
@@ -161,16 +158,19 @@ class TableEmployeeRows extends DataTableSource {
                   color: TColors.primary,
                 ),
               ),
-              const Gap(10),
-              GestureDetector(
-                onTap: () {
-                  _confirmDelete(context, employee);
-                },
-                child: const Icon(
-                  Iconsax.trash,
-                  color: Colors.red,
+              // Chỉ hiển thị nút xóa nếu user có role admin
+              if (globalStorage.role?.toLowerCase().trim() == 'admin') ...[
+                const Gap(10),
+                GestureDetector(
+                  onTap: () {
+                    _confirmDelete(context, employee);
+                  },
+                  child: const Icon(
+                    Iconsax.trash,
+                    color: Colors.red,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         )),

@@ -32,8 +32,8 @@ class DataTableContract extends StatelessWidget {
           );
         } else if (state.isSuccess) {
           return TPaginatedDataTable(
-            minWidth: 700,
             tableHeight: 500,
+            rowsPerPage: 5,
             dataRowHeight: TSizes.xl * 1.2,
             columns: [
               DataColumn2(

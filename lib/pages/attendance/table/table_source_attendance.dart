@@ -24,6 +24,10 @@ class AttendanceTableRows extends DataTableSource {
 
   @override
   DataRow? getRow(int index) {
+    TextStyle baseStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
+          color: TColors.dark,
+          fontWeight: FontWeight.w500,
+        );
     if (index >= attendances.length) return null;
 
     final attendance = attendances[index];
@@ -39,13 +43,10 @@ class AttendanceTableRows extends DataTableSource {
     } catch (e) {
       // fallback to '-'
     }
-    TextStyle baseStyle = Theme.of(context)
-        .textTheme
-        .bodyMedium!
-        .copyWith(color: TColors.dark, fontSize: 12);
 
     return DataRow2(
       cells: [
+        DataCell(Center(child: Text('${index + 1}', style: baseStyle))),
         DataCell(Center(child: Text(personalName, style: baseStyle))),
         DataCell(Center(
             child: Text(attendance.date != null ? attendance.date! : '-',

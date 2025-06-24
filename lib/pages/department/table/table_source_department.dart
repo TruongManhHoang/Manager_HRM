@@ -1,5 +1,7 @@
 import 'package:admin_hrm/constants/sizes.dart';
 import 'package:admin_hrm/data/model/department/department_model.dart';
+import 'package:admin_hrm/di/locator.dart';
+import 'package:admin_hrm/local/hive_storage.dart';
 import 'package:admin_hrm/pages/department/bloc/department_bloc.dart';
 import 'package:admin_hrm/pages/department/bloc/department_event.dart';
 import 'package:admin_hrm/router/routers_name.dart';
@@ -8,6 +10,7 @@ import 'package:data_table_2/data_table_2.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../constants/colors.dart';
@@ -33,8 +36,18 @@ class DepartmentTableRows extends DataTableSource {
       color: TColors.primary,
       fontWeight: FontWeight.w600,
     );
+    final globalStorage = getIt<GlobalStorage>();
 
     return DataRow2(cells: [
+      DataCell(Padding(
+        padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+        child: Center(
+          child: Text(
+            '${index + 1}',
+            style: baseStyle,
+          ),
+        ),
+      )),
       DataCell(Center(child: Text(department.code ?? '-', style: baseStyle))),
       DataCell(Center(child: Text(department.name, style: baseStyle))),
       DataCell(
@@ -83,7 +96,7 @@ class DepartmentTableRows extends DataTableSource {
           IconButton(
             onPressed: () {
               context.go(
-                RouterName.editDepartment,
+                '/department-page/edit-department',
                 extra: department,
               );
             },
@@ -91,13 +104,18 @@ class DepartmentTableRows extends DataTableSource {
             color: TColors.primary,
           ),
           const SizedBox(width: TSizes.xs),
-          IconButton(
-            onPressed: () {
-              _confirmDelete(context, department);
-            },
-            icon: const Icon(Iconsax.trash),
-            color: Colors.red,
-          ),
+          if (globalStorage.role?.toLowerCase().trim() == 'admin') ...[
+            const Gap(10),
+            GestureDetector(
+              onTap: () {
+                _confirmDelete(context, department);
+              },
+              child: const Icon(
+                Iconsax.trash,
+                color: Colors.red,
+              ),
+            ),
+          ],
         ],
       )),
     ]);

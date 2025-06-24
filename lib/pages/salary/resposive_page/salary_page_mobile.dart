@@ -49,7 +49,7 @@ class SalaryPageMobile extends StatelessWidget {
                               minimumSize: const Size(150, 50),
                             ),
                             onPressed: () {
-                              context.push(RouterName.addSalary);
+                              context.go('/salary-page/add-salary');
                             },
                             child: Text(
                               'Thêm Lương',

@@ -36,6 +36,7 @@ class _DataTableAccountState extends State<DataTableAccount> {
           return TPaginatedDataTable(
             minWidth: 700,
             tableHeight: 500,
+            rowsPerPage: 5,
             dataRowHeight: TSizes.xl * 1.45,
             columns: [
               DataColumn2(

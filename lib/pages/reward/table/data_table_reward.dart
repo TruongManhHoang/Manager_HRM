@@ -45,10 +45,19 @@ class _DataTableRewardState extends State<DataTableReward> {
         }
         if (state is RewardLoaded) {
           return TPaginatedDataTable(
-            minWidth: 700,
             tableHeight: 500,
+            rowsPerPage: 5,
             dataRowHeight: TSizes.xl * 1.45,
             columns: [
+              DataColumn2(
+                label: Center(
+                  child: Text('STT',
+                      maxLines: 2,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: baseStyle),
+                ),
+              ),
               DataColumn2(
                 label: Center(
                   child: Text('Mã khen thưởng',

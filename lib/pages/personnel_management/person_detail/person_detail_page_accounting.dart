@@ -1,6 +1,7 @@
 import 'package:admin_hrm/common/widgets/breadcrumb/t_breadcrums_with_heading.dart';
 import 'package:admin_hrm/common/widgets/layouts/headers/headers.dart';
 import 'package:admin_hrm/common/widgets/layouts/sidebars/sidebar_accounting.dart';
+import 'package:admin_hrm/common/widgets/layouts/sidebars/sidebar_manager.dart';
 import 'package:admin_hrm/common/widgets/layouts/sidebars/sidebar_user.dart';
 import 'package:admin_hrm/common/widgets/text_form/text_form_field.dart';
 import 'package:admin_hrm/constants/sizes.dart';
@@ -55,8 +56,19 @@ class _PersonDetailPageAccountingState
     super.initState();
     accountId = globalStorage.userId ?? '';
     currentUser = globalStorage.password;
-    // _loadAvatar();
-    debugPrint('Current user: $currentUser');
+  }
+
+  Widget _buildSidebar() {
+    final userRole = globalStorage.role?.toLowerCase().trim() ?? 'employee';
+
+    switch (userRole) {
+      case 'kế toán':
+        return const SidebarAccounting();
+      case 'quản lý':
+        return const SidebarManager();
+      default:
+        return const SidebarUser();
+    }
   }
 
   Future<void> _checkInOut(
@@ -163,7 +175,7 @@ class _PersonDetailPageAccountingState
         return Scaffold(
             body: Row(
           children: [
-            const Expanded(child: SidebarAccounting()),
+            Expanded(child: _buildSidebar()),
             Expanded(
               flex: 5,
               child: Column(

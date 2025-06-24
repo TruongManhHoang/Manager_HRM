@@ -2,6 +2,7 @@ import 'package:admin_hrm/common/widgets/breadcrumb/t_breadcrums_with_heading.da
 import 'package:admin_hrm/common/widgets/layouts/headers/headers.dart';
 import 'package:admin_hrm/common/widgets/layouts/sidebars/sidebar.dart';
 import 'package:admin_hrm/common/widgets/text_form/text_form_field.dart';
+import 'package:admin_hrm/common/widgets/formatter/input_format.dart';
 import 'package:admin_hrm/constants/colors.dart';
 import 'package:admin_hrm/constants/sizes.dart';
 import 'package:admin_hrm/data/model/attendance/attendance_model.dart';
@@ -14,9 +15,11 @@ import 'package:admin_hrm/data/model/salary/salary_model.dart';
 import 'package:admin_hrm/di/locator.dart';
 import 'package:admin_hrm/local/hive_storage.dart';
 import 'package:admin_hrm/pages/salary/bloc/salary_bloc.dart';
+import 'package:admin_hrm/utils/code_generator.dart';
 
 import 'package:admin_hrm/router/routers_name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -65,14 +68,72 @@ class _AddSalaryPageState extends State<AddSalaryPage> {
     approveByController = TextEditingController(
       text: personal?.name ?? '',
     );
+
+    // Tự động generate mã bảng lương
+    _generateSalaryCode();
+
+    // Thêm listener để tự động tính tổng lương khi user nhập
+    _addCalculationListeners();
+  }
+
+  // Thêm listeners cho các trường tiền để tự động tính tổng
+  void _addCalculationListeners() {
+    baseSalaryController.addListener(_calculateTotalSalary);
+    kpiBonusController.addListener(_calculateTotalSalary);
+    rewardBonusController.addListener(_calculateTotalSalary);
+    disciplinaryDeductionController.addListener(_calculateTotalSalary);
+    attendanceBonusController.addListener(_calculateTotalSalary);
+  }
+
+  // Tính tổng lương dựa trên các trường đã nhập
+  void _calculateTotalSalary() {
+    final baseSalary =
+        CurrencyInputFormatter.getRawValue(baseSalaryController.text);
+    final kpiBonus =
+        CurrencyInputFormatter.getRawValue(kpiBonusController.text);
+    final rewardBonus =
+        CurrencyInputFormatter.getRawValue(rewardBonusController.text);
+    final disciplinaryDeduction = CurrencyInputFormatter.getRawValue(
+        disciplinaryDeductionController.text);
+    final attendanceBonus =
+        double.tryParse(attendanceBonusController.text) ?? 0.0;
+
+    // Công thức: Lương cơ bản + KPI + Khen thưởng + Công - Kỷ luật
+    final totalSalary = baseSalary +
+        kpiBonus +
+        rewardBonus +
+        attendanceBonus -
+        disciplinaryDeduction;
+
+    // Format và hiển thị tổng lương
+    final formatter = NumberFormat('#,##0', 'vi_VN');
+    totalSalaryController.text = '${formatter.format(totalSalary.toInt())} ₫';
+  }
+
+  @override
+  void dispose() {
+    // Remove listeners khi dispose
+    baseSalaryController.removeListener(_calculateTotalSalary);
+    kpiBonusController.removeListener(_calculateTotalSalary);
+    rewardBonusController.removeListener(_calculateTotalSalary);
+    disciplinaryDeductionController.removeListener(_calculateTotalSalary);
+    attendanceBonusController.removeListener(_calculateTotalSalary);
+    super.dispose();
+  } // Hàm tự động tạo mã bảng lương theo format BL + số thứ tự
+
+  void _generateSalaryCode() {
+    final existingSalaries = globalStorage.salaries ?? [];
+    final existingCodes = existingSalaries.map((s) => s.code ?? '').toList();
+    codeController.text = CodeGenerator.generateCode(
+      CodeGenerator.salaryPrefix,
+      existingCodes,
+    );
   }
 
   String? _selectedUserId;
-  final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
   void _updateUserData(String? userId) {
     if (userId == null) return;
-
     final attendancesForUser =
         attendances!.where((u) => u.userId == userId).toList();
     final reward = rewards!.where((u) => u.employeeId == userId).toList();
@@ -80,65 +141,74 @@ class _AddSalaryPageState extends State<AddSalaryPage> {
         disciplinary!.where((u) => u.employeeId == userId).toList();
     final contractsForUser =
         contracts!.where((u) => u.employeeId == userId).toList();
-    final kpiForUser = kpis!.where((u) => u.userId == userId).toList();
-
-    final totalAttendanceHours = attendancesForUser.fold<double>(
-      0.0,
-      (sum, item) => sum + (item.numberOfHours ?? 0),
-    );
-
+    final kpiForUser = kpis!
+        .where((u) => u.userId == userId)
+        .toList(); // Tính số ngày chấm công thực tế (mỗi lần chấm công = 1 ngày)
+    final totalAttendanceDays = attendancesForUser.length.toDouble();
     final totalDisciplinary = disciplinaryAction.fold<double>(
       0.0,
-      (sum, item) => sum + (item.disciplinaryValue ?? 0),
+      (sum, item) => sum + item.disciplinaryValue,
     );
 
     final totalRewardValue = reward.fold<double>(
       0.0,
-      (sum, item) => sum + (item.rewardValue ?? 0),
+      (sum, item) => sum + item.rewardValue,
     );
-
     final baseSalary = contractsForUser.fold<double>(
       0.0,
-      (sum, item) => sum + (item.salary ?? 0),
+      (sum, item) => sum + item.salary,
     );
     final kpiBonus = kpiForUser.fold<double>(
       0.0,
-      (sum, item) => sum + (item.totalScore ?? 0),
-    );
-    const workingDaysInMonth = 26.0;
-    final totalAttendanceDays = totalAttendanceHours / 8.0;
-    final salaryPerDay = baseSalary / workingDaysInMonth;
-    final salaryByAttendance = salaryPerDay * totalAttendanceDays;
+      (sum, item) => sum + item.totalScore,
+    ); // Tính lương theo công thức chuẩn
+    const workingDaysInMonth = 23.0;
+    // Sử dụng số ngày chấm công thực tế (mỗi lần chấm công = 1 ngày)
+    final actualWorkingDays = totalAttendanceDays > workingDaysInMonth
+        ? workingDaysInMonth
+        : totalAttendanceDays; // Không vượt quá số ngày quy định
 
+    final salaryPerDay = baseSalary / workingDaysInMonth;
+    final salaryByAttendance = salaryPerDay * actualWorkingDays;
+
+    // Công thức tính lương cuối: Lương theo công + Thưởng - Phạt + KPI
     final totalSalary =
         salaryByAttendance + totalRewardValue - totalDisciplinary + kpiBonus;
-
     setState(() {
-      attendanceBonusController.text =
-          totalAttendanceHours.toStringAsFixed(2); // nếu muốn hiện số giờ
-      disciplinaryDeductionController.text = totalDisciplinary.toString();
-      baseSalaryController.text = baseSalary.toString();
-      rewardBonusController.text = totalRewardValue.toString();
-      totalSalaryController.text = totalSalary.toStringAsFixed(2);
-      kpiBonusController.text = kpiBonus.toStringAsFixed(2);
+      attendanceBonusController.text = totalAttendanceDays
+          .toStringAsFixed(0); // Hiển thị số ngày chấm công (số nguyên)
+
+      // Format tất cả các trường tiền theo VND
+      final formatter = NumberFormat('#,##0', 'vi_VN');
+      baseSalaryController.text = '${formatter.format(baseSalary.toInt())} ₫';
+      kpiBonusController.text = '${formatter.format(kpiBonus.toInt())} ₫';
+      rewardBonusController.text =
+          '${formatter.format(totalRewardValue.toInt())} ₫';
+      disciplinaryDeductionController.text =
+          '${formatter.format(totalDisciplinary.toInt())} ₫';
+      totalSalaryController.text = '${formatter.format(totalSalary.toInt())} ₫';
     });
   }
 
   void _submitForm() {
     final selectedUser = personals!.firstWhere((u) => u.id == _selectedUserId);
     if (_formKey.currentState!.validate()) {
-      final now = DateTime.now();
+      final now = DateTime
+          .now(); // Chuyển đổi các giá trị đã format về số thực để lưu vào database
       final newSalary = SalaryModel(
-        code: codeController.text,
+        code: codeController.text, // Sử dụng mã đã được tạo tự động
         employeeId: selectedUser.id!,
-        baseSalary: double.tryParse(baseSalaryController.text) ?? 0.0,
-        kpiBonus: double.tryParse(kpiBonusController.text) ?? 0.0,
-        rewardBonus: double.tryParse(rewardBonusController.text) ?? 0.0,
-        disciplinaryDeduction:
-            double.tryParse(disciplinaryDeductionController.text) ?? 0.0,
+        baseSalary:
+            CurrencyInputFormatter.getRawValue(baseSalaryController.text),
+        kpiBonus: CurrencyInputFormatter.getRawValue(kpiBonusController.text),
+        rewardBonus:
+            CurrencyInputFormatter.getRawValue(rewardBonusController.text),
+        disciplinaryDeduction: CurrencyInputFormatter.getRawValue(
+            disciplinaryDeductionController.text),
         attendanceBonus: double.tryParse(attendanceBonusController.text) ?? 0.0,
         approvedBy: approveByController.text,
-        totalSalary: double.tryParse(totalSalaryController.text) ?? 0.0,
+        totalSalary:
+            CurrencyInputFormatter.getRawValue(totalSalaryController.text),
         payDate: now,
       );
 
@@ -155,14 +225,14 @@ class _AddSalaryPageState extends State<AddSalaryPage> {
         if (state is SalarySuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Thêm lương thành công'),
+              content: Text('Thêm bảng lương thành công'),
             ),
           );
           context.go(RouterName.salaryPage);
         } else if (state is SalaryFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Thêm lương thất bại: ${state.error}'),
+              content: Text('Thêm bảng lương thất bại: ${state.error}'),
             ),
           );
         }
@@ -209,12 +279,43 @@ class _AddSalaryPageState extends State<AddSalaryPage> {
                                             .titleMedium,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
-                                      TTextFormField(
-                                        textAlign: true,
-                                        text: 'Mã bảng lương',
-                                        hint: 'Nhập mã bảng lương',
-                                        controller: codeController,
+                                      Row(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Mã bảng lương:',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .copyWith(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                              ),
+                                              Gap(TSizes.spaceBtwItems),
+                                              Text(
+                                                codeController.text,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .copyWith(
+                                                        color: TColors.dark,
+                                                        fontWeight:
+                                                            FontWeight.w700),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
+                                      // TTextFormField(
+                                      //   textAlign: true,
+                                      //   text: 'Mã bảng lương',
+                                      //   hint: 'Mã được tạo tự động',
+                                      //   controller: codeController,
+                                      //   enabled:
+                                      //       false,
+                                      // ),
                                       const Gap(TSizes.spaceBtwItems),
                                       Row(
                                         children: [
@@ -251,7 +352,7 @@ class _AddSalaryPageState extends State<AddSalaryPage> {
                                                 return DropdownMenuItem<String>(
                                                   value: personal.id,
                                                   child: Text(
-                                                    personal.name ?? 'N/A',
+                                                    personal.name,
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                   ),
@@ -292,38 +393,48 @@ class _AddSalaryPageState extends State<AddSalaryPage> {
                                         text: 'Số công trong tháng',
                                         hint: '',
                                         controller: attendanceBonusController,
+                                        enabled: false,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'khen thưởng',
-                                        hint: '',
+                                        hint: 'Giá trị khen thưởng (₫)',
                                         controller: rewardBonusController,
+                                        keyboardType: TextInputType.number,
+                                        isFormatted: true,
+                                        enabled: false,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'kỷ luật',
-                                        hint: '',
+                                        hint: 'Giá trị kỷ luật (₫)',
                                         controller:
                                             disciplinaryDeductionController,
                                         keyboardType: TextInputType.number,
+                                        isFormatted: true,
+                                        enabled: false,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'Lương cơ bản',
-                                        hint: '',
+                                        hint: 'Giá trị cơ bản (₫)',
                                         controller: baseSalaryController,
                                         keyboardType: TextInputType.number,
+                                        isFormatted: true,
+                                        enabled: false,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'Thưởng KPI',
-                                        hint: '',
+                                        hint: 'Giá trị thưởng KPI (₫)',
                                         controller: kpiBonusController,
                                         keyboardType: TextInputType.number,
+                                        isFormatted: true,
+                                        enabled: false,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       Row(

@@ -22,6 +22,15 @@ class TDropDownMenu extends StatelessWidget {
           initialSelection: controller.text,
           controller: controller,
           width: 200,
+          // textStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          //       fontSize: 20, // ✅ Font size rất to
+          //       fontWeight: FontWeight.w600,
+          //     ),
+          menuStyle: MenuStyle(
+            backgroundColor: MaterialStateProperty.all(
+              Colors.white,
+            ),
+          ),
           trailingIcon: const Icon(Icons.arrow_drop_down),
           dropdownMenuEntries: menus
               .map((educationLevel) => DropdownMenuEntry<String>(

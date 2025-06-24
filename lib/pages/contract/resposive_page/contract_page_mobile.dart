@@ -1,9 +1,5 @@
-import 'package:admin_hrm/common/widgets/breadcrumb/t_breadcrums_with_heading.dart';
 import 'package:admin_hrm/pages/contract/table/data_table_contract.dart';
-import 'package:admin_hrm/pages/personnel_management/table/data_table_personnel.dart';
-import 'package:admin_hrm/router/routers_name.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 class ContractPageMobile extends StatelessWidget {
@@ -20,11 +16,6 @@ class ContractPageMobile extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const TBreadcrumsWithHeading(
-                heading: 'Hợp đồng',
-                breadcrumbItems: [],
-                rouderName: RouterName.contractPage,
-              ),
               const Row(
                 children: [
                   Text(
@@ -49,7 +40,7 @@ class ContractPageMobile extends StatelessWidget {
                               backgroundColor: Colors.blue,
                             ),
                             onPressed: () {
-                              context.push(RouterName.addContract);
+                              context.go('/contract-page/add-contract');
                             },
                             child: Text(
                               'Thêm hợp đồng',

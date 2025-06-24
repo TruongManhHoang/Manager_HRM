@@ -25,15 +25,23 @@ class KPIFormPage extends StatefulWidget {
 
 class _KPIFormPageState extends State<KPIFormPage> {
   final _formKey = GlobalKey<FormState>();
-
   final _departmentIdController = TextEditingController();
   final _periodController = TextEditingController();
   final _evaluatorIdController = TextEditingController();
   final _notesController = TextEditingController();
+  final _targetScoreController = TextEditingController();
 
   List<PersionalManagement> _users = [];
   String? _selectedUserId;
+  String? _selectedStatus = 'Đang đánh giá';
   List<KPIMetric> _metrics = [];
+
+  final List<String> _statusOptions = [
+    'Đang đánh giá',
+    'Đã hoàn thành',
+    'Cần cải thiện',
+    'Xuất sắc'
+  ];
 
   bool _isLoadingUsers = true;
 
@@ -184,14 +192,13 @@ class _KPIFormPageState extends State<KPIFormPage> {
                                                       ? 'Vui lòng chọn nhân sự'
                                                       : null,
                                             ),
-                                      const Gap(8),
+                                      const Gap(TSizes.spaceBtwItems),
                                       TextFormField(
                                         controller: _departmentIdController,
                                         decoration: const InputDecoration(
                                             labelText: 'Phòng ban'),
-                                        enabled: false,
                                       ),
-                                      const Gap(8),
+                                      const Gap(TSizes.spaceBtwItems),
                                       TextFormField(
                                         controller: _periodController,
                                         decoration: const InputDecoration(
@@ -200,7 +207,40 @@ class _KPIFormPageState extends State<KPIFormPage> {
                                         validator: (value) =>
                                             value!.isEmpty ? 'Bắt buộc' : null,
                                       ),
-                                      const Gap(8),
+                                      const Gap(TSizes.spaceBtwItems),
+                                      // Thêm trường mục tiêu điểm số
+                                      TextFormField(
+                                        controller: _targetScoreController,
+                                        decoration: const InputDecoration(
+                                            labelText: 'Mục tiêu điểm số'),
+                                        keyboardType: TextInputType.number,
+                                        validator: (value) {
+                                          if (value?.isEmpty ?? true)
+                                            return 'Bắt buộc';
+                                          if (double.tryParse(value!) == null)
+                                            return 'Phải là số';
+                                          return null;
+                                        },
+                                      ),
+                                      const Gap(TSizes.spaceBtwItems),
+                                      // Thêm dropdown trạng thái
+                                      DropdownButtonFormField<String>(
+                                        value: _selectedStatus,
+                                        decoration: const InputDecoration(
+                                            labelText: 'Trạng thái'),
+                                        items: _statusOptions.map((status) {
+                                          return DropdownMenuItem<String>(
+                                            value: status,
+                                            child: Text(status),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedStatus = value;
+                                          });
+                                        },
+                                      ),
+                                      const Gap(TSizes.spaceBtwItems),
                                       const Divider(),
                                       Row(
                                         mainAxisAlignment:
@@ -215,6 +255,36 @@ class _KPIFormPageState extends State<KPIFormPage> {
                                             label: const Text('Thêm chỉ số'),
                                           )
                                         ],
+                                      ),
+                                      // Hiển thị tổng điểm hiện tại
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue.withOpacity(0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          border: Border.all(
+                                              color:
+                                                  Colors.blue.withOpacity(0.3)),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text('Tổng điểm hiện tại:',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w600)),
+                                            Text(
+                                                '${_calculateTotalScore().toStringAsFixed(1)} điểm',
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.blue,
+                                                    fontSize: 16)),
+                                          ],
+                                        ),
                                       ),
                                       ..._metrics.asMap().entries.map((entry) {
                                         final index = entry.key;
@@ -242,7 +312,7 @@ class _KPIFormPageState extends State<KPIFormPage> {
                                                           ? 'Bắt buộc'
                                                           : null,
                                                 ),
-                                                const Gap(8),
+                                                const Gap(TSizes.spaceBtwItems),
                                                 TextFormField(
                                                   initialValue:
                                                       metric.description,
@@ -256,7 +326,7 @@ class _KPIFormPageState extends State<KPIFormPage> {
                                                                   description:
                                                                       val),
                                                 ),
-                                                const Gap(8),
+                                                const Gap(TSizes.spaceBtwItems),
                                                 TextFormField(
                                                   initialValue:
                                                       metric.weight.toString(),
@@ -273,10 +343,19 @@ class _KPIFormPageState extends State<KPIFormPage> {
                                                               double.tryParse(
                                                                       val) ??
                                                                   0),
-                                                  validator: (value) =>
-                                                      value!.isEmpty
-                                                          ? 'Bắt buộc'
-                                                          : null,
+                                                  validator: (value) {
+                                                    if (value?.isEmpty ?? true)
+                                                      return 'Bắt buộc';
+                                                    final weight =
+                                                        double.tryParse(value!);
+                                                    if (weight == null)
+                                                      return 'Phải là số';
+                                                    if (weight <= 0)
+                                                      return 'Phải > 0';
+                                                    if (weight > 1)
+                                                      return 'Phải ≤ 1.0';
+                                                    return null;
+                                                  },
                                                 ),
                                                 const Gap(8),
                                                 TextFormField(
@@ -294,10 +373,19 @@ class _KPIFormPageState extends State<KPIFormPage> {
                                                               double.tryParse(
                                                                       val) ??
                                                                   0),
-                                                  validator: (value) =>
-                                                      value!.isEmpty
-                                                          ? 'Bắt buộc'
-                                                          : null,
+                                                  validator: (value) {
+                                                    if (value?.isEmpty ?? true)
+                                                      return 'Bắt buộc';
+                                                    final score =
+                                                        double.tryParse(value!);
+                                                    if (score == null)
+                                                      return 'Phải là số';
+                                                    if (score < 0)
+                                                      return 'Phải ≥ 0';
+                                                    if (score > 100)
+                                                      return 'Phải ≤ 100';
+                                                    return null;
+                                                  },
                                                 ),
                                                 Align(
                                                   alignment:
@@ -316,39 +404,35 @@ class _KPIFormPageState extends State<KPIFormPage> {
                                           ),
                                         );
                                       }).toList(),
-                                      const Gap(16),
+                                      const Gap(TSizes.spaceBtwItems),
                                       TextFormField(
                                         controller: _evaluatorIdController,
                                         decoration: const InputDecoration(
                                             labelText: 'Người đánh giá'),
                                       ),
-                                      const Gap(8),
+                                      const Gap(TSizes.spaceBtwItems),
                                       TextFormField(
                                         controller: _notesController,
                                         decoration: const InputDecoration(
                                             labelText: 'Ghi chú'),
                                         maxLines: 3,
                                       ),
-                                      const Gap(8),
-                                      Row(
-                                        children: [
-                                          ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.blue,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal:
-                                                    TSizes.defaultSpace * 2,
-                                                vertical: 16,
-                                              ),
+                                      const Gap(TSizes.spaceBtwSections),
+                                      Center(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blue,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal:
+                                                  TSizes.defaultSpace * 2,
+                                              vertical: 16,
                                             ),
-                                            onPressed: _submitForm,
-                                            child: Text(
-                                                widget.initialKPI != null
-                                                    ? 'Sửa KPI'
-                                                    : 'Thêm KPI'),
                                           ),
-                                        ],
+                                          onPressed: _submitForm,
+                                          child: Text(widget.initialKPI != null
+                                              ? 'Sửa KPI'
+                                              : 'Thêm KPI'),
+                                        ),
                                       ),
                                     ],
                                   ),

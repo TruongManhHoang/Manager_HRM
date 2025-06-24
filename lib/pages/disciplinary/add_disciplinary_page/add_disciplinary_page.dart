@@ -16,6 +16,7 @@ import 'package:admin_hrm/pages/reward/bloc/reward_bloc.dart';
 import 'package:admin_hrm/pages/reward/bloc/reward_event.dart';
 import 'package:admin_hrm/pages/reward/bloc/reward_state.dart';
 import 'package:admin_hrm/router/routers_name.dart';
+import 'package:admin_hrm/utils/code_generator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +41,14 @@ class AddDisciplinaryPage extends StatelessWidget {
     TextEditingController approveByController =
         TextEditingController(text: personal!.name);
     TextEditingController statusController = TextEditingController();
+
+    // Tự động generate mã kỷ luật
+    final existingDisciplinary = globalKey.disciplinaryActions ?? [];
+    final existingCodes = existingDisciplinary.map((d) => d.code).toList();
+    codeController.text = CodeGenerator.generateCode(
+      CodeGenerator.disciplinaryPrefix,
+      existingCodes,
+    );
 
     final _formKey = GlobalKey<FormState>();
 
@@ -104,8 +113,9 @@ class AddDisciplinaryPage extends StatelessWidget {
                                             TTextFormField(
                                               textAlign: true,
                                               text: 'Mã kỷ luật',
-                                              hint: 'Nhập mã kỷ luật',
+                                              hint: 'Mã được tạo tự động',
                                               controller: codeController,
+                                              enabled: false,
                                             ),
                                             const Gap(
                                               TSizes.spaceBtwItems,

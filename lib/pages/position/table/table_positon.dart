@@ -1,9 +1,12 @@
 import 'package:admin_hrm/data/model/position/position_model.dart';
+import 'package:admin_hrm/di/locator.dart';
+import 'package:admin_hrm/local/hive_storage.dart';
 import 'package:admin_hrm/pages/position/bloc/position_bloc.dart';
 import 'package:admin_hrm/router/routers_name.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -21,6 +24,7 @@ class TablePositionRows extends DataTableSource {
           color: TColors.dark,
           fontWeight: FontWeight.w500,
         );
+    final globalStorage = getIt<GlobalStorage>();
     final position = positions[index];
     return DataRow2(cells: [
       DataCell(Padding(
@@ -92,19 +96,24 @@ class TablePositionRows extends DataTableSource {
           children: [
             IconButton(
               onPressed: () {
-                context.go(RouterName.editPosition, extra: position);
+                context.go('/position-page/edit-position', extra: position);
               },
               icon: const Icon(Iconsax.edit),
               color: TColors.primary,
             ),
             const SizedBox(width: TSizes.xs),
-            IconButton(
-              onPressed: () {
-                _confirmDelete(context, position);
-              },
-              icon: const Icon(Iconsax.trash),
-              color: Colors.red,
-            ),
+            if (globalStorage.role?.toLowerCase().trim() == 'admin') ...[
+              const Gap(10),
+              GestureDetector(
+                onTap: () {
+                  _confirmDelete(context, position);
+                },
+                child: const Icon(
+                  Iconsax.trash,
+                  color: Colors.red,
+                ),
+              ),
+            ],
           ],
         ),
       ))

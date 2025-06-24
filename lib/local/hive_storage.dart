@@ -232,9 +232,6 @@ class GlobalStorageImpl implements GlobalStorage {
     departmentList.add(department);
     await _box.put(
         GlobalStorageKey.departments, departmentList.map((e) => e.toMap()));
-    debugPrint(
-      "Department list is ${_box.get(GlobalStorageKey.departments)}",
-    );
   }
 
   @override
@@ -243,9 +240,6 @@ class GlobalStorageImpl implements GlobalStorage {
     positionList.add(position);
     await _box.put(
         GlobalStorageKey.positions, positionList.map((e) => e.toMap()));
-    debugPrint(
-      "Position list is ${_box.get(GlobalStorageKey.positions)}",
-    );
   }
 
   @override
@@ -274,9 +268,6 @@ class GlobalStorageImpl implements GlobalStorage {
     departmentList.removeWhere((department) => department.id == id);
     await _box.put(
         GlobalStorageKey.departments, departmentList.map((e) => e.toMap()));
-    debugPrint(
-      "Department list is ${_box.get(GlobalStorageKey.departments)}",
-    );
   }
 
   @override
@@ -285,9 +276,6 @@ class GlobalStorageImpl implements GlobalStorage {
     positionList.removeWhere((position) => position.id == id);
     await _box.put(
         GlobalStorageKey.positions, positionList.map((e) => e.toMap()));
-    debugPrint(
-      "Position list is ${_box.get(GlobalStorageKey.positions)}",
-    );
   }
 
   @override
@@ -306,9 +294,6 @@ class GlobalStorageImpl implements GlobalStorage {
       GlobalStorageKey.departments,
       departmentList.map((e) => e.toMap()).toList(),
     );
-    debugPrint(
-      "Department list is ${_box.get(GlobalStorageKey.departments)}",
-    );
   }
 
   @override
@@ -324,9 +309,6 @@ class GlobalStorageImpl implements GlobalStorage {
       GlobalStorageKey.positions,
       positionList.map((e) => e.toMap()).toList(),
     );
-    debugPrint(
-      "Position list is ${_box.get(GlobalStorageKey.positions)}",
-    );
   }
 
   @override
@@ -334,9 +316,6 @@ class GlobalStorageImpl implements GlobalStorage {
     await _box.put(
       GlobalStorageKey.departments,
       departments.map((e) => e.toMap()).toList(),
-    );
-    debugPrint(
-      "Department list is ${_box.get(GlobalStorageKey.departments)}",
     );
   }
 
@@ -346,9 +325,6 @@ class GlobalStorageImpl implements GlobalStorage {
       GlobalStorageKey.positions,
       positions.map((e) => e.toMap()).toList(),
     );
-    debugPrint(
-      "Position list is ${_box.get(GlobalStorageKey.positions)}",
-    );
   }
 
   @override
@@ -357,9 +333,6 @@ class GlobalStorageImpl implements GlobalStorage {
     managerList.add(manager);
     await _box.put(
         GlobalStorageKey.personalManagers, managerList.map((e) => e.toMap()));
-    debugPrint(
-      "Personal manager list is ${_box.get(GlobalStorageKey.personalManagers)}",
-    );
   }
 
   @override
@@ -368,9 +341,6 @@ class GlobalStorageImpl implements GlobalStorage {
     await _box.put(
       GlobalStorageKey.personalManagers,
       managers.map((e) => e.toMap()).toList(),
-    );
-    debugPrint(
-      "Personal manager list is ${_box.get(GlobalStorageKey.personalManagers)}",
     );
   }
 
@@ -396,9 +366,6 @@ class GlobalStorageImpl implements GlobalStorage {
     managerList.removeWhere((manager) => manager.id == id);
     await _box.put(
         GlobalStorageKey.personalManagers, managerList.map((e) => e.toMap()));
-    debugPrint(
-      "Personal manager list is ${_box.get(GlobalStorageKey.personalManagers)}",
-    );
   }
 
   @override
@@ -410,9 +377,6 @@ class GlobalStorageImpl implements GlobalStorage {
     }
     await _box.put(
         GlobalStorageKey.personalManagers, managerList.map((e) => e.toMap()));
-    debugPrint(
-      "Personal manager list is ${_box.get(GlobalStorageKey.personalManagers)}",
-    );
   }
 
   @override
@@ -437,9 +401,6 @@ class GlobalStorageImpl implements GlobalStorage {
     await _box.put(
       GlobalStorageKey.attendances,
       attendances.map((e) => e.toJson()).toList(),
-    );
-    debugPrint(
-      "Attendance list is ${_box.get(GlobalStorageKey.attendances)}",
     );
   }
 
@@ -482,9 +443,6 @@ class GlobalStorageImpl implements GlobalStorage {
       GlobalStorageKey.contracts,
       contracts.map((e) => e.toMap()).toList(),
     );
-    debugPrint(
-      "Contract list is ${_box.get(GlobalStorageKey.contracts)}",
-    );
   }
 
   @override
@@ -494,9 +452,6 @@ class GlobalStorageImpl implements GlobalStorage {
       GlobalStorageKey.disciplinarys,
       actions.map((e) => e.toMap()).toList(),
     );
-    debugPrint(
-      "Disciplinary list is ${_box.get(GlobalStorageKey.disciplinarys)}",
-    );
   }
 
   @override
@@ -504,9 +459,6 @@ class GlobalStorageImpl implements GlobalStorage {
     await _box.put(
       GlobalStorageKey.kpis,
       kpis.map((e) => e.toMap()).toList(),
-    );
-    debugPrint(
-      "KPI list is ${_box.get(GlobalStorageKey.kpis)}",
     );
   }
 
@@ -517,9 +469,6 @@ class GlobalStorageImpl implements GlobalStorage {
     await _box.put(
       GlobalStorageKey.rewards,
       rewards.map((e) => e.toMap()).toList(),
-    );
-    debugPrint(
-      "Reward list is ${_box.get(GlobalStorageKey.rewards)}",
     );
   }
 

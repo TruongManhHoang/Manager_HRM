@@ -146,11 +146,19 @@ class _AddEmployeeFormState extends State<AddEmployeeForm> {
                     const Header(),
                     Expanded(
                       child: Container(
+                        width: double.infinity,
                         color: Colors.grey[200],
                         padding: const EdgeInsets.all(16.0),
                         child: SingleChildScrollView(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              const Text(
+                                'Thêm nhân Viên',
+                                style: TextStyle(
+                                    fontSize: 25, color: Colors.black),
+                              ),
+                              const Gap(TSizes.spaceBtwSections),
                               Container(
                                 width: 600,
                                 padding:

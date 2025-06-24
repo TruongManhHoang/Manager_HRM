@@ -1,3 +1,4 @@
+import 'package:admin_hrm/constants/colors.dart';
 import 'package:admin_hrm/pages/attendance/bloc/attendance_bloc.dart';
 import 'package:admin_hrm/pages/attendance/bloc/attendance_state.dart';
 import 'package:admin_hrm/pages/attendance/table/table_source_attendance.dart';
@@ -26,79 +27,68 @@ class DataTableAttendance extends StatelessWidget {
               ),
             );
           }
+          TextStyle baseStyle =
+              Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: TColors.dark,
+                  );
           return TPaginatedDataTable(
-            minWidth: 700,
             tableHeight: 500,
+            rowsPerPage: 5,
             dataRowHeight: TSizes.xl * 1.45,
-            columns: const [
+            columns: [
               DataColumn2(
                 label: Center(
-                  child: Text(
-                    'Nhân viên',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: Text('STT',
+                      maxLines: 2,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: baseStyle),
+                ),
+                fixedWidth: 60, // Cố định chiều rộng nếu muốn
+              ),
+              DataColumn2(
+                label: Center(
+                  child: Text('Nhân viên',
+                      maxLines: 2,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: baseStyle),
                 ),
               ),
               DataColumn2(
                 label: Center(
-                  child: Text(
-                    'Ngày',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: Text('Ngày',
+                      maxLines: 2,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: baseStyle),
                 ),
               ),
               DataColumn2(
                 label: Center(
-                  child: Text(
-                    'Giờ vào',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: Text('Giờ vào',
+                      maxLines: 2,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: baseStyle),
                 ),
               ),
               DataColumn2(
                 label: Center(
-                  child: Text(
-                    'Giờ ra',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: Text('Giờ ra',
+                      maxLines: 2,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: baseStyle),
                 ),
               ),
               DataColumn2(
                 label: Center(
-                  child: Text(
-                    'Hành động',
-                    maxLines: 2,
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: Text('Hành động',
+                      maxLines: 2,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: baseStyle),
                 ),
               ),
             ],

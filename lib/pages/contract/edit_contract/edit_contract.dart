@@ -25,9 +25,8 @@ class EditContract extends StatelessWidget {
       text: contract.contractType ?? '',
     );
     TextEditingController salaryController = TextEditingController(
-      text: contract.salary != null
-          ? NumberFormat('#,###').format(contract.salary)
-          : '',
+      text:
+          '${NumberFormat('#,##0', 'vi_VN').format(contract.salary.toInt())} ₫',
     );
     TextEditingController startDateController = TextEditingController(
       text: contract.startDate != null
@@ -46,7 +45,7 @@ class EditContract extends StatelessWidget {
       text: contract.status ?? '',
     );
     TextEditingController descriptionController = TextEditingController(
-      text: contract.description ?? '',
+      text: contract.description,
     );
     final dateFormat = DateFormat('dd/MM/yyyy');
     final List<String> contractType = [

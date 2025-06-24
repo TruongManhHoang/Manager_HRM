@@ -3,11 +3,6 @@ import 'package:admin_hrm/common/widgets/method/method.dart';
 import 'package:admin_hrm/constants/sizes.dart';
 import 'package:admin_hrm/pages/account/bloc/account_bloc.dart';
 import 'package:admin_hrm/pages/account/table/data_table_account.dart';
-import 'package:admin_hrm/pages/reward/bloc/reward_bloc.dart';
-import 'package:admin_hrm/pages/reward/bloc/reward_event.dart';
-import 'package:admin_hrm/pages/reward/bloc/reward_state.dart';
-import 'package:admin_hrm/pages/reward/table/data_table_reward.dart';
-import 'package:admin_hrm/router/routers_name.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,11 +49,7 @@ class AccountPageDesktop extends StatelessWidget {
                               backgroundColor: Colors.blue,
                             ),
                             onPressed: () async {
-                              final result =
-                                  await context.push(RouterName.addAccount);
-                              if (result == true) {
-                                context.read<AccountBloc>().add(LoadAccounts());
-                              }
+                              context.go('/account-page/add-account');
                             },
                             child: Text(
                               'Thêm tài khoản',

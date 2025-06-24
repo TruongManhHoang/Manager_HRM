@@ -4,10 +4,10 @@ import 'package:admin_hrm/data/model/personnel_management.dart';
 import 'package:admin_hrm/di/locator.dart';
 import 'package:admin_hrm/local/hive_storage.dart';
 import 'package:admin_hrm/pages/contract/bloc/contract_bloc.dart';
-import 'package:admin_hrm/router/routers_name.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -127,19 +127,24 @@ class TableContractRows extends DataTableSource {
             children: [
               IconButton(
                 onPressed: () {
-                  context.go(RouterName.editContract, extra: contract);
+                  context.go('/contract-page/edit-contract', extra: contract);
                 },
                 icon: const Icon(Iconsax.edit),
                 color: TColors.primary,
               ),
               const SizedBox(width: TSizes.xs),
-              IconButton(
-                onPressed: () {
-                  _confirmDelete(context, contract);
-                },
-                icon: const Icon(Iconsax.trash),
-                color: Colors.red,
-              ),
+              if (globalStorage.role?.toLowerCase().trim() == 'admin') ...[
+                const Gap(10),
+                GestureDetector(
+                  onTap: () {
+                    _confirmDelete(context, contract);
+                  },
+                  child: const Icon(
+                    Iconsax.trash,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
             ],
           ),
         ),

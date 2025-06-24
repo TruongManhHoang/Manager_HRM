@@ -7,6 +7,7 @@ import 'package:admin_hrm/router/routers_name.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -29,10 +30,20 @@ class TableSourceSalary extends DataTableSource {
     final formatDate = DateFormat('dd/MM/yyyy');
     TextStyle baseStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
           color: TColors.dark,
+          fontSize: 16,
           fontWeight: FontWeight.w500,
         );
 
     return DataRow2(cells: [
+      DataCell(Padding(
+        padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
+        child: Center(
+          child: Text(
+            '${index + 1}',
+            style: baseStyle,
+          ),
+        ),
+      )),
       DataCell(Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
         child: Center(child: Text(salary.code ?? '-', style: baseStyle)),
@@ -98,13 +109,18 @@ class TableSourceSalary extends DataTableSource {
               color: TColors.primary,
             ),
             const SizedBox(width: TSizes.xs),
-            IconButton(
-              onPressed: () {
-                _confirmDelete(context, salary);
-              },
-              icon: const Icon(Iconsax.trash),
-              color: Colors.red,
-            ),
+            if (globalStorage.role?.toLowerCase().trim() == 'admin') ...[
+              const Gap(10),
+              GestureDetector(
+                onTap: () {
+                  _confirmDelete(context, salary);
+                },
+                child: const Icon(
+                  Iconsax.trash,
+                  color: Colors.red,
+                ),
+              ),
+            ],
           ],
         ),
       )),

@@ -51,7 +51,7 @@ class DepartmentPageDesktop extends StatelessWidget {
                               backgroundColor: Colors.blue,
                             ),
                             onPressed: () {
-                              context.push(RouterName.addDepartment);
+                              context.go('/department-page/add-department');
                             },
                             child: Text(
                               'Thêm Phòng Ban',

@@ -2,6 +2,7 @@ import 'package:admin_hrm/common/widgets/breadcrumb/t_breadcrums_with_heading.da
 import 'package:admin_hrm/common/widgets/layouts/headers/headers.dart';
 import 'package:admin_hrm/common/widgets/layouts/sidebars/sidebar.dart';
 import 'package:admin_hrm/common/widgets/text_form/text_form_field.dart';
+import 'package:admin_hrm/common/widgets/formatter/input_format.dart';
 import 'package:admin_hrm/constants/colors.dart';
 import 'package:admin_hrm/constants/sizes.dart';
 import 'package:admin_hrm/data/model/personnel_management.dart';
@@ -26,12 +27,6 @@ class EditSalaryPage extends StatefulWidget {
 
 class _EditSalaryPageState extends State<EditSalaryPage> {
   late final GlobalStorage globalStorage;
-  // List<PersionalManagement>? personals;
-  // List<AttendanceModel>? attendances;
-  // List<RewardModel>? rewards;
-  // List<DisciplinaryModel>? disciplinary;
-  // List<ContractModel>? contracts;
-  // List<KPIModel>? kpis;
   List<PersionalManagement>? personals;
 
   final codeController = TextEditingController();
@@ -48,25 +43,64 @@ class _EditSalaryPageState extends State<EditSalaryPage> {
     super.initState();
     globalStorage = getIt<GlobalStorage>();
     _selectedUserId = widget.salary.employeeId;
-    final personal = globalStorage.personalManagers!.firstWhere(
-      (p) => p.id == widget.salary.employeeId,
-    );
     personals = globalStorage.personalManagers;
     codeController.text = widget.salary.code!;
-    employeeIdController.text = widget.salary.employeeId;
-    baseSalaryController.text = widget.salary.baseSalary.toString();
-    kpiBonusController.text = widget.salary.kpiBonus.toString();
-    rewardBonusController.text = widget.salary.rewardBonus.toString();
+    employeeIdController.text =
+        widget.salary.employeeId; // Format initial values to VND
+    final formatter = NumberFormat('#,##0', 'vi_VN');
+    baseSalaryController.text =
+        '${formatter.format(widget.salary.baseSalary.toInt())} ₫';
+    kpiBonusController.text =
+        '${formatter.format(widget.salary.kpiBonus.toInt())} ₫';
+    rewardBonusController.text =
+        '${formatter.format(widget.salary.rewardBonus.toInt())} ₫';
     disciplinaryDeductionController.text =
-        widget.salary.disciplinaryDeduction.toString();
+        '${formatter.format(widget.salary.disciplinaryDeduction.toInt())} ₫';
     attendanceBonusController.text = widget.salary.attendanceBonus.toString();
     approveByController.text = widget.salary.approvedBy;
-    totalSalaryController.text = widget.salary.totalSalary!.toStringAsFixed(2);
+    totalSalaryController.text =
+        '${formatter.format(widget.salary.totalSalary!.toInt())} ₫';
+
+    // Thêm listener để tự động tính tổng lương khi user nhập
+    _addCalculationListeners();
+  }
+
+  // Thêm listeners cho các trường tiền để tự động tính tổng
+  void _addCalculationListeners() {
+    baseSalaryController.addListener(_calculateTotalSalary);
+    kpiBonusController.addListener(_calculateTotalSalary);
+    rewardBonusController.addListener(_calculateTotalSalary);
+    disciplinaryDeductionController.addListener(_calculateTotalSalary);
+    attendanceBonusController.addListener(_calculateTotalSalary);
+  }
+
+  // Tính tổng lương dựa trên các trường đã nhập
+  void _calculateTotalSalary() {
+    final baseSalary =
+        CurrencyInputFormatter.getRawValue(baseSalaryController.text);
+    final kpiBonus =
+        CurrencyInputFormatter.getRawValue(kpiBonusController.text);
+    final rewardBonus =
+        CurrencyInputFormatter.getRawValue(rewardBonusController.text);
+    final disciplinaryDeduction = CurrencyInputFormatter.getRawValue(
+        disciplinaryDeductionController.text);
+    final attendanceBonus =
+        double.tryParse(attendanceBonusController.text) ?? 0.0;
+
+    // Công thức: Lương cơ bản + KPI + Khen thưởng + Công - Kỷ luật
+    final totalSalary = baseSalary +
+        kpiBonus +
+        rewardBonus +
+        attendanceBonus -
+        disciplinaryDeduction;
+
+    // Format và hiển thị tổng lương
+    final formatter = NumberFormat('#,##0', 'vi_VN');
+    totalSalaryController.text = '${formatter.format(totalSalary.toInt())} ₫';
   }
 
   String? _selectedUserId;
   final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
-
   void _submitForm() {
     final selectedUser = personals!.firstWhere((u) => u.id == _selectedUserId);
     if (_formKey.currentState!.validate()) {
@@ -75,14 +109,17 @@ class _EditSalaryPageState extends State<EditSalaryPage> {
         id: widget.salary.id,
         code: codeController.text,
         employeeId: selectedUser.id!,
-        baseSalary: double.tryParse(baseSalaryController.text) ?? 0.0,
-        kpiBonus: double.tryParse(kpiBonusController.text) ?? 0.0,
-        rewardBonus: double.tryParse(rewardBonusController.text) ?? 0.0,
-        disciplinaryDeduction:
-            double.tryParse(disciplinaryDeductionController.text) ?? 0.0,
+        baseSalary:
+            CurrencyInputFormatter.getRawValue(baseSalaryController.text),
+        kpiBonus: CurrencyInputFormatter.getRawValue(kpiBonusController.text),
+        rewardBonus:
+            CurrencyInputFormatter.getRawValue(rewardBonusController.text),
+        disciplinaryDeduction: CurrencyInputFormatter.getRawValue(
+            disciplinaryDeductionController.text),
         attendanceBonus: double.tryParse(attendanceBonusController.text) ?? 0.0,
         approvedBy: approveByController.text,
-        totalSalary: double.tryParse(totalSalaryController.text) ?? 0.0,
+        totalSalary:
+            CurrencyInputFormatter.getRawValue(totalSalaryController.text),
         payDate: now,
       );
 
@@ -92,6 +129,17 @@ class _EditSalaryPageState extends State<EditSalaryPage> {
 
   final _formKey = GlobalKey<FormState>();
   DateTime now = DateTime.now();
+  @override
+  void dispose() {
+    // Remove listeners khi dispose
+    baseSalaryController.removeListener(_calculateTotalSalary);
+    kpiBonusController.removeListener(_calculateTotalSalary);
+    rewardBonusController.removeListener(_calculateTotalSalary);
+    disciplinaryDeductionController.removeListener(_calculateTotalSalary);
+    attendanceBonusController.removeListener(_calculateTotalSalary);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SalaryBloc, SalaryState>(
@@ -195,7 +243,7 @@ class _EditSalaryPageState extends State<EditSalaryPage> {
                                                 return DropdownMenuItem<String>(
                                                   value: personal.id,
                                                   child: Text(
-                                                    personal.name ?? 'N/A',
+                                                    personal.name,
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                   ),
@@ -237,33 +285,38 @@ class _EditSalaryPageState extends State<EditSalaryPage> {
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'khen thưởng',
-                                        hint: '',
+                                        hint: 'Nhập khen thưởng (₫)',
                                         controller: rewardBonusController,
+                                        keyboardType: TextInputType.number,
+                                        isFormatted: true,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'kỷ luật',
-                                        hint: '',
+                                        hint: 'Nhập kỷ luật (₫)',
                                         controller:
                                             disciplinaryDeductionController,
                                         keyboardType: TextInputType.number,
+                                        isFormatted: true,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'Lương cơ bản',
-                                        hint: '',
+                                        hint: 'Nhập lương cơ bản (₫)',
                                         controller: baseSalaryController,
                                         keyboardType: TextInputType.number,
+                                        isFormatted: true,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'Thưởng KPI',
-                                        hint: '',
+                                        hint: 'Nhập thưởng KPI (₫)',
                                         controller: kpiBonusController,
                                         keyboardType: TextInputType.number,
+                                        isFormatted: true,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       Row(

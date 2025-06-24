@@ -10,10 +10,10 @@ import 'package:admin_hrm/local/hive_storage.dart';
 import 'package:admin_hrm/pages/account/bloc/account_bloc.dart';
 import 'package:admin_hrm/pages/auth/bloc/auth_bloc.dart';
 import 'package:admin_hrm/pages/auth/bloc/auth_event.dart';
-import 'package:admin_hrm/pages/auth/bloc/auth_state.dart';
 
 import 'package:admin_hrm/router/routers_name.dart';
 import 'package:admin_hrm/utils/validators/validation.dart';
+import 'package:admin_hrm/utils/code_generator.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,13 +45,20 @@ class _AddAccountPageState extends State<AddAccountPage> {
   @override
   void initState() {
     super.initState();
+
+    // Tự động generate mã tài khoản
+    codeController.text = CodeGenerator.generateCode(
+      CodeGenerator.accountPrefix,
+      [], // Tạm thời dùng list rỗng, sẽ cập nhật sau khi có storage
+    );
+
     // Nếu có dữ liệu, mặc định chọn nhân viên đầu tiên
     if (personals.isNotEmpty) {
       final first = personals.first;
       selectedPersonalId = first.id;
       personalIdController.text = first.id!;
-      emailController.text = first.email ?? '';
-      nameController.text = first.name ?? '';
+      emailController.text = first.email;
+      nameController.text = first.name;
     }
   }
 
@@ -109,8 +116,9 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                       TTextFormField(
                                         textAlign: true,
                                         text: 'Mã tài khoản',
-                                        hint: 'Nhập mã tài khoản',
+                                        hint: 'Mã được tạo tự động',
                                         controller: codeController,
+                                        enabled: false,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       Row(
@@ -136,7 +144,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                             dropdownMenuEntries: personals
                                                 .map((personal) =>
                                                     DropdownMenuEntry<String>(
-                                                      label: personal.name!,
+                                                      label: personal.name,
                                                       value: personal.id!,
                                                     ))
                                                 .toList(),
@@ -147,9 +155,9 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                                     personals.firstWhere(
                                                         (e) => e.id == value);
                                                 emailController.text =
-                                                    selected.email ?? '';
+                                                    selected.email;
                                                 nameController.text =
-                                                    selected.name ?? '';
+                                                    selected.name;
                                               });
                                             },
                                             hintText: 'Chọn nhân viên',
@@ -195,14 +203,22 @@ class _AddAccountPageState extends State<AddAccountPage> {
                                         validator: TValidator.validatePassword,
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
-                                      TTextFormField(
-                                        textAlign: true,
-                                        text: 'Role',
-                                        hint: 'Nhập role',
+                                      // TTextFormField(
+                                      //   textAlign: true,
+                                      //   text: 'Role',                                      //   hint: 'Nhập role',
+                                      //   controller: roleController,
+                                      //   validator: (value) =>
+                                      //       TValidator.validateEmptyText(
+                                      //           'Role', value),
+                                      // ),
+                                      TDropDownMenu(
+                                        menus: const [
+                                          'quản lý',
+                                          'kế toán',
+                                          'employee',
+                                        ],
                                         controller: roleController,
-                                        validator: (value) =>
-                                            TValidator.validateEmptyText(
-                                                'Role', value),
+                                        text: 'Vai trò',
                                       ),
                                       const Gap(TSizes.spaceBtwItems),
                                       TDropDownMenu(

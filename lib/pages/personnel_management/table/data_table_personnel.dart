@@ -34,16 +34,12 @@ class DataTableEmployee extends StatelessWidget {
           return Center(child: Text('Lỗi: ${state.errorMessage}'));
         } else if (state.personnel == null || state.personnel!.isEmpty) {
           return const Center(child: Text('Không có dữ liệu nhân viên.'));
-        } else if (state.isSuccess) {
-          final employees = state.personnel;
-
-          // if (employees!.isEmpty) {
-          //   return const Center(child: Text('Không có dữ liệu nhân viên.'));
-          // }
-
+        } else if (state.isSuccess && state.personnel != null) {
+          final employees = state.personnel!;
           return TPaginatedDataTable(
-            tableHeight: 500,
-            dataRowHeight: TSizes.xl * 1.2,
+            tableHeight: 600,
+            dataRowHeight: 65,
+            rowsPerPage: 5,
             columns: [
               DataColumn2(
                 label: Center(
@@ -148,8 +144,7 @@ class DataTableEmployee extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: baseStyle))),
             ],
-            source: TableEmployeeRows(context, employees!),
-            rowsPerPage: 10,
+            source: TableEmployeeRows(context, employees),
           );
         }
 

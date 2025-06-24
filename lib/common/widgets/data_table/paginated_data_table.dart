@@ -13,7 +13,7 @@ class TPaginatedDataTable extends StatelessWidget {
     super.key,
     required this.columns,
     required this.source,
-    this.rowsPerPage = 10,
+    this.rowsPerPage = 4,
     this.tableHeight = 760,
     this.onPageChanged,
     this.sortColumnIndex,
@@ -57,7 +57,11 @@ class TPaginatedDataTable extends StatelessWidget {
       child: Theme(
         // Use to set the Backend color
         data: Theme.of(context).copyWith(
-            cardTheme: const CardTheme(color: Colors.white, elevation: 0)),
+            cardTheme: CardTheme(
+          color: Colors.white,
+          elevation: 0,
+          surfaceTintColor: Colors.white,
+        )),
         child: PaginatedDataTable2(
           source: source,
           columns: columns,
@@ -66,6 +70,7 @@ class TPaginatedDataTable extends StatelessWidget {
           dividerThickness: 0,
           horizontalMargin: 12,
           rowsPerPage: rowsPerPage,
+          availableRowsPerPage: const [5, 10, 15, 20, 25],
           showFirstLastButtons: true,
           showCheckboxColumn: true,
           sortAscending: sortAscending,

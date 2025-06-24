@@ -2,10 +2,8 @@ import 'package:admin_hrm/common/widgets/breadcrumb/t_breadcrums_with_heading.da
 import 'package:admin_hrm/common/widgets/method/method.dart';
 import 'package:admin_hrm/constants/sizes.dart';
 import 'package:admin_hrm/pages/kpi/bloc/kpi_bloc.dart';
-import 'package:admin_hrm/pages/kpi/bloc/kpi_event.dart';
 import 'package:admin_hrm/pages/kpi/bloc/kpi_state.dart';
 import 'package:admin_hrm/pages/kpi/table/data_table_kpi.dart';
-import 'package:admin_hrm/router/routers_name.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,10 +24,10 @@ class KPIPageDesktop extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const TBreadcrumsWithHeading(
-                heading: 'KPI',
-                breadcrumbItems: [],
-              ),
+              // const TBreadcrumsWithHeading(
+              //   heading: 'KPI',
+              //   breadcrumbItems: [],
+              // ),
               const Row(
                 children: [
                   Text(
@@ -51,12 +49,8 @@ class KPIPageDesktop extends StatelessWidget {
                             style: TextButton.styleFrom(
                               backgroundColor: Colors.blue,
                             ),
-                            onPressed: () async {
-                              final result =
-                                  await context.pushNamed(RouterName.addKpi);
-                              if (result == true) {
-                                context.read<KPIBloc>().add(LoadKPIs());
-                              }
+                            onPressed: () {
+                              context.go('/kpi-page/add-kpi');
                             },
                             child: Text(
                               'Thêm KPI',

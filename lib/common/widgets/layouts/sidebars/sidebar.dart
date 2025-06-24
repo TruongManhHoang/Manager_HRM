@@ -50,6 +50,27 @@ class Sidebar extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Center(
+                      child: Container(
+                        width: 100,
+                        height: 30,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: TSizes.sm,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(TSizes.sm),
+                        ),
+                        child: Text(
+                          storageKey.role ?? 'Chưa cập nhật',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .apply(color: Colors.green),
+                        ),
+                      ),
+                    ),
                     Text(
                       'Danh sách',
                       style: Theme.of(context)
@@ -107,27 +128,6 @@ class Sidebar extends StatelessWidget {
                         icon: Iconsax.document1,
                         title: 'Xuất báo cáo',
                         router: RouterName.reportPage),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 25),
-                    //   child: Row(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     children: [
-                    //       const Icon(Iconsax.document1),
-                    //       const Gap(TSizes.sm),
-                    //       GestureDetector(
-                    //         onTap: () {
-                    //           exportPdfForWeb();
-                    //         },
-                    //         child: const Text(
-                    //           'Xuất báo cáo',
-                    //           style: TextStyle(
-                    //             fontSize: 16,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                     const Gap(TSizes.spaceBtwItems),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),

@@ -20,7 +20,7 @@ class _DepartmentPageState extends State<DepartmentPage> {
   Widget build(BuildContext context) {
     final globalStorage = getIt<GlobalStorage>();
     final role = globalStorage.role ?? 'user';
-    if (role != 'admin') {
+    if (role != 'admin' && role != 'quản lý') {
       return Scaffold(
         body: Center(
           child: AlertDialog(

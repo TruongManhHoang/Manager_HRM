@@ -14,8 +14,8 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 
-class SidebarUser extends StatelessWidget {
-  const SidebarUser({super.key});
+class SidebarManager extends StatelessWidget {
+  const SidebarManager({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -76,16 +76,38 @@ class SidebarUser extends StatelessWidget {
                     ),
 
                     // Menu items
-
                     const MenuItem(
                         icon: Iconsax.profile_2user,
                         title: 'Thông tin nhân viên',
-                        router: RouterName.employeeDetailUserPage),
+                        router: RouterName.employeeDetailAccountingPage),
                     const MenuItem(
                         icon: Iconsax.wallet,
-                        title: 'Bảng lương',
-                        router: RouterName.employeeSalaryPage),
-
+                        title: 'Danh sách nhân viên',
+                        router: RouterName.employeePage),
+                    const MenuItem(
+                        icon: Iconsax.building_3,
+                        title: 'Phòng ban',
+                        router: RouterName.departmentPage),
+                    const MenuItem(
+                        icon: Iconsax.document_text,
+                        title: 'Hợp đồng',
+                        router: RouterName.contractPage),
+                    const MenuItem(
+                        icon: Iconsax.medal,
+                        title: 'Chức vụ',
+                        router: RouterName.positionPage),
+                    const MenuItem(
+                        icon: Iconsax.gift1,
+                        title: 'Khen thưởng',
+                        router: RouterName.rewardPage),
+                    const MenuItem(
+                        icon: Iconsax.shield_slash,
+                        title: 'Kỷ luật',
+                        router: RouterName.disciplinaryPage),
+                    const MenuItem(
+                        icon: Iconsax.document1,
+                        title: 'Xuất báo cáo',
+                        router: RouterName.reportPage),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: Row(

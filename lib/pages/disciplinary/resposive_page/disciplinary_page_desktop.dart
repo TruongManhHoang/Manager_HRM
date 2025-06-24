@@ -51,14 +51,8 @@ class DisciplinaryPageDesktop extends StatelessWidget {
                             style: TextButton.styleFrom(
                               backgroundColor: Colors.blue,
                             ),
-                            onPressed: () async {
-                              final result = await context
-                                  .push(RouterName.addDisciplinary);
-                              if (result == true) {
-                                context
-                                    .read<DisciplinaryBloc>()
-                                    .add(LoadDisciplinary());
-                              }
+                            onPressed: () {
+                              context.go('/disciplinary-page/add-disciplinary');
                             },
                             child: Text(
                               'Thêm kỷ luật',

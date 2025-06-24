@@ -50,11 +50,8 @@ class RewardPageTable extends StatelessWidget {
                               backgroundColor: Colors.blue,
                             ),
                             onPressed: () async {
-                              final result =
-                                  await context.push(RouterName.addReward);
-                              if (result == true) {
-                                context.read<RewardBloc>().add(LoadRewards());
-                              }
+                              context.go('/reward-page/add-reward');
+                              context.read<RewardBloc>().add(LoadRewards());
                             },
                             child: Text(
                               'Thêm Khen Thưởng',

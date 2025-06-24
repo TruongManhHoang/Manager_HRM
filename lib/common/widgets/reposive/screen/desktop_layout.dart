@@ -1,6 +1,7 @@
 import 'package:admin_hrm/common/widgets/layouts/headers/headers.dart';
 import 'package:admin_hrm/common/widgets/layouts/sidebars/sidebar.dart';
 import 'package:admin_hrm/common/widgets/layouts/sidebars/sidebar_accounting.dart';
+import 'package:admin_hrm/common/widgets/layouts/sidebars/sidebar_manager.dart';
 import 'package:admin_hrm/common/widgets/layouts/sidebars/sidebar_user.dart';
 import 'package:admin_hrm/di/locator.dart';
 import 'package:admin_hrm/local/hive_storage.dart';
@@ -13,21 +14,19 @@ class DesktopLayout extends StatelessWidget {
 
   Widget _buildSidebar() {
     final globalStorage = getIt<GlobalStorage>();
-    final userRole = globalStorage.role?.toLowerCase() ?? 'employee';
-
-    print('Debug - DesktopLayout role: "$userRole"'); // Debug log
+    final userRole = globalStorage.role?.toLowerCase().trim() ??
+        'employee'; // ✅ Thêm .trim()
 
     switch (userRole) {
       case 'admin':
-        print('Debug - Using Sidebar (admin)');
-        return const Sidebar(); // Admin sidebar với full quyền
-      case 'accounting':
-        print('Debug - Using SidebarAccounting');
-        return const SidebarAccounting(); // Accounting sidebar
-      case 'employee':
+        return const Sidebar();
+      case 'kế toán':
+        return const SidebarAccounting();
+      case 'quản lý':
+        return const SidebarManager();
+      case 'nhân viên':
       default:
-        print('Debug - Using SidebarUser');
-        return const SidebarUser(); // User sidebar với quyền hạn chế
+        return const SidebarUser();
     }
   }
 

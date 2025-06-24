@@ -51,7 +51,7 @@ class PositionPageDesktop extends StatelessWidget {
                               backgroundColor: Colors.blue,
                             ),
                             onPressed: () {
-                              context.push(RouterName.addPosition);
+                              context.go('/position-page/add-position');
                             },
                             child: Text(
                               'Thêm chức vụ',

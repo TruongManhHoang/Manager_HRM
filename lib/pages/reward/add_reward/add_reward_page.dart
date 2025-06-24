@@ -12,6 +12,7 @@ import 'package:admin_hrm/pages/reward/bloc/reward_bloc.dart';
 import 'package:admin_hrm/pages/reward/bloc/reward_event.dart';
 import 'package:admin_hrm/pages/reward/bloc/reward_state.dart';
 import 'package:admin_hrm/router/routers_name.dart';
+import 'package:admin_hrm/utils/code_generator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +36,14 @@ class AddRewardPage extends StatelessWidget {
     TextEditingController reasonController = TextEditingController();
     TextEditingController approvedByController =
         TextEditingController(text: personal!.name);
-    TextEditingController statusController = TextEditingController();
+    TextEditingController statusController =
+        TextEditingController(); // Tự động generate mã khen thưởng
+    final existingRewards = globalKey.rewards ?? [];
+    final existingCodes = existingRewards.map((r) => r.code).toList();
+    codeController.text = CodeGenerator.generateCode(
+      CodeGenerator.rewardPrefix,
+      existingCodes,
+    );
 
     final _formKey = GlobalKey<FormState>();
     // final currencyFormat = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
@@ -115,8 +123,9 @@ class AddRewardPage extends StatelessWidget {
                                             TTextFormField(
                                               textAlign: true,
                                               text: 'Mã khen thưởng',
-                                              hint: 'Nhập mã khen thưởng',
+                                              hint: 'Mã được tạo tự động',
                                               controller: codeController,
+                                              enabled: false,
                                             ),
                                             const Gap(
                                               TSizes.spaceBtwItems,
