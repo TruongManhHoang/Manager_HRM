@@ -1,4 +1,3 @@
-
 import 'package:admin_hrm/di/locator.dart';
 import 'package:admin_hrm/local/hive_storage.dart';
 
@@ -27,12 +26,17 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: kIsWeb
-        ? HydratedStorageDirectory.web
-        : HydratedStorageDirectory((await getTemporaryDirectory()).path),
-  );
+  if (kIsWeb) {
+    // For web, pass a temporary directory
+    HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: await getTemporaryDirectory(),
+    );
+  } else {
+    final storageDirectory = await getTemporaryDirectory();
+    HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: storageDirectory,
+    );
+  }
 
   dependencyInjector.servicesLocator();
   await Hive.openBox(GlobalStorageKey.globalStorage);
