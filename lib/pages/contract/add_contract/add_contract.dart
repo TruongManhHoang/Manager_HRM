@@ -79,289 +79,304 @@ class AddContract extends StatelessWidget {
                   const Header(),
                   Expanded(
                     child: Container(
+                      width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
                       color: Colors.grey[200],
                       padding: EdgeInsets.all(16.0),
                       child: SingleChildScrollView(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const TBreadcrumsWithHeading(
-                              heading: 'Hợp đồng',
-                              breadcrumbItems: [
-                                RouterName.addContract,
-                              ],
+                            const Text(
+                              'Thêm hợp đồng',
+                              style:
+                                  TextStyle(fontSize: 25, color: Colors.black),
                             ),
-                            Container(
-                                width: 600,
-                                padding:
-                                    const EdgeInsets.all(TSizes.defaultSpace),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                ),
-                                alignment: Alignment.center,
-                                child: Column(
-                                  children: [
-                                    Form(
-                                        key: _globalKey,
-                                        child: Column(
-                                          children: [
-                                            TTextFormField(
-                                              textAlign: true,
-                                              hint: 'Mã được tạo tự động',
-                                              text: 'Mã hợp đồng',
-                                              controller:
-                                                  codeContractController,
-                                              enabled: false,
-                                            ),
-                                            Gap(TSizes.spaceBtwItems),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "nhân viên" ?? '',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleSmall,
-                                                ),
-                                                const Gap(
-                                                    TSizes.spaceBtwSections),
-                                                DropdownMenu(
-                                                  initialSelection:
-                                                      employeeController.text,
-                                                  controller:
-                                                      employeeController,
-                                                  width: 200,
-                                                  trailingIcon: const Icon(
-                                                      Icons.arrow_drop_down),
-                                                  dropdownMenuEntries:
-                                                      persionals!
-                                                          .map((personal) =>
-                                                              DropdownMenuEntry<
-                                                                  String>(
-                                                                label: personal
-                                                                    .name,
-                                                                value: personal
-                                                                    .id!,
-                                                              ))
-                                                          .toList(),
-                                                  onSelected: (value) {
-                                                    selectPersonalId = value;
-                                                  },
-                                                  hintText: 'Chọn nhân viên',
-                                                ),
-                                              ],
-                                            ),
-                                            const Gap(TSizes.spaceBtwItems),
-                                            TDropDownMenu(
-                                                menus: contractType,
+                            const Gap(TSizes.spaceBtwSections),
+                            Center(
+                              child: Container(
+                                  width: 600,
+                                  padding:
+                                      const EdgeInsets.all(TSizes.defaultSpace),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Column(
+                                    children: [
+                                      Form(
+                                          key: _globalKey,
+                                          child: Column(
+                                            children: [
+                                              TTextFormField(
+                                                textAlign: true,
+                                                hint: 'Mã được tạo tự động',
+                                                text: 'Mã hợp đồng',
                                                 controller:
-                                                    contractTypeController,
-                                                text: 'Loại hợp đồng'),
-                                            const Gap(TSizes.spaceBtwItems),
-                                            TTextFormField(
-                                              textAlign: true,
-                                              hint: 'Nhập lương cơ bản',
-                                              text: 'Lương cơ bản',
-                                              controller: salaryController,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              isFormatted: true,
-                                            ),
-                                            const Gap(TSizes.spaceBtwItems),
-                                            TTextFormField(
-                                              textAlign: true,
-                                              hint: 'Nhập Mô tả',
-                                              text: 'Mô tả',
-                                              controller: descriptionController,
-                                            ),
-                                            const Gap(TSizes.spaceBtwItems),
-
-                                            /// Ngày bắt đầu
-                                            GestureDetector(
-                                              onTap: () async {
-                                                DateTime? pickedDate =
-                                                    await showDatePicker(
-                                                  context: context,
-                                                  initialDate: DateTime.now(),
-                                                  firstDate: DateTime(1900),
-                                                  lastDate: DateTime(2100),
-                                                );
-                                                if (pickedDate != null) {
-                                                  String formattedDate =
-                                                      "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                                                  startDateController.text =
-                                                      formattedDate;
-                                                }
-                                              },
-                                              child: AbsorbPointer(
-                                                child: TTextFormField(
-                                                  textAlign: true,
-                                                  text: 'Ngày bắt đầu',
-                                                  hint: 'Chọn ngày bắt đầu',
-                                                  controller:
-                                                      startDateController,
-                                                ),
+                                                    codeContractController,
+                                                enabled: false,
                                               ),
-                                            ),
-
-                                            /// Khoảng cách
-                                            const Gap(TSizes.spaceBtwItems),
-
-                                            /// Ngày kết thúc
-                                            GestureDetector(
-                                              onTap: () async {
-                                                DateTime? pickedDate =
-                                                    await showDatePicker(
-                                                  context: context,
-                                                  initialDate: DateTime.now(),
-                                                  firstDate: DateTime(1900),
-                                                  lastDate: DateTime(2100),
-                                                );
-                                                if (pickedDate != null) {
-                                                  String formattedDate =
-                                                      "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                                                  endDateController.text =
-                                                      formattedDate;
-                                                }
-                                              },
-                                              child: AbsorbPointer(
-                                                child: TTextFormField(
-                                                  textAlign: true,
-                                                  text: 'Ngày kết thúc',
-                                                  hint: 'Chọn ngày kết thúc',
-                                                  controller: endDateController,
-                                                ),
-                                              ),
-                                            ),
-
-                                            const Gap(TSizes.spaceBtwItems),
-                                            TDropDownMenu(
-                                                menus: const [
-                                                  'Hoạt động',
-                                                  'Đã kết thúc',
+                                              Gap(TSizes.spaceBtwItems),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "nhân viên" ?? '',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleSmall,
+                                                  ),
+                                                  const Gap(
+                                                      TSizes.spaceBtwSections),
+                                                  DropdownMenu(
+                                                    initialSelection:
+                                                        employeeController.text,
+                                                    controller:
+                                                        employeeController,
+                                                    width: 200,
+                                                    trailingIcon: const Icon(
+                                                        Icons.arrow_drop_down),
+                                                    dropdownMenuEntries:
+                                                        persionals!
+                                                            .map((personal) =>
+                                                                DropdownMenuEntry<
+                                                                    String>(
+                                                                  label:
+                                                                      personal
+                                                                          .name,
+                                                                  value:
+                                                                      personal
+                                                                          .id!,
+                                                                ))
+                                                            .toList(),
+                                                    onSelected: (value) {
+                                                      selectPersonalId = value;
+                                                    },
+                                                    hintText: 'Chọn nhân viên',
+                                                  ),
                                                 ],
-                                                text: 'Trạng thái:',
-                                                controller: statusController),
+                                              ),
+                                              const Gap(TSizes.spaceBtwItems),
+                                              TDropDownMenu(
+                                                  menus: contractType,
+                                                  controller:
+                                                      contractTypeController,
+                                                  text: 'Loại hợp đồng'),
+                                              const Gap(TSizes.spaceBtwItems),
+                                              TTextFormField(
+                                                textAlign: true,
+                                                hint: 'Nhập lương cơ bản',
+                                                text: 'Lương cơ bản',
+                                                controller: salaryController,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                isFormatted: true,
+                                              ),
+                                              const Gap(TSizes.spaceBtwItems),
+                                              TTextFormField(
+                                                textAlign: true,
+                                                hint: 'Nhập Mô tả',
+                                                text: 'Mô tả',
+                                                controller:
+                                                    descriptionController,
+                                              ),
+                                              const Gap(TSizes.spaceBtwItems),
 
-                                            const Gap(TSizes.spaceBtwSections),
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: TextButton(
-                                                      style: TextButton.styleFrom(
-                                                          backgroundColor:
-                                                              Colors.red,
-                                                          padding: const EdgeInsets
-                                                              .symmetric(
-                                                              horizontal: TSizes
-                                                                      .defaultSpace *
-                                                                  2,
-                                                              vertical: 16)),
-                                                      onPressed: () {
-                                                        context.go(RouterName
-                                                            .contractPage);
-                                                      },
-                                                      child: Text(
-                                                        'Hủy',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyMedium!
-                                                            .copyWith(
-                                                                color: Colors
-                                                                    .white),
-                                                      )),
+                                              /// Ngày bắt đầu
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  DateTime? pickedDate =
+                                                      await showDatePicker(
+                                                    context: context,
+                                                    initialDate: DateTime.now(),
+                                                    firstDate: DateTime(1900),
+                                                    lastDate: DateTime(2100),
+                                                  );
+                                                  if (pickedDate != null) {
+                                                    String formattedDate =
+                                                        "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                                                    startDateController.text =
+                                                        formattedDate;
+                                                  }
+                                                },
+                                                child: AbsorbPointer(
+                                                  child: TTextFormField(
+                                                    textAlign: true,
+                                                    text: 'Ngày bắt đầu',
+                                                    hint: 'Chọn ngày bắt đầu',
+                                                    controller:
+                                                        startDateController,
+                                                  ),
                                                 ),
-                                                const Gap(TSizes.defaultSpace),
-                                                Expanded(
-                                                  child: TextButton(
-                                                      style: TextButton.styleFrom(
-                                                          backgroundColor:
-                                                              Colors.blue,
-                                                          padding: const EdgeInsets
-                                                              .symmetric(
-                                                              horizontal: TSizes
-                                                                      .defaultSpace *
-                                                                  2,
-                                                              vertical: 16)),
-                                                      onPressed: () {
-                                                        // Handle form submission
-                                                        if (_globalKey
-                                                            .currentState!
-                                                            .validate()) {
-                                                          // Debug: In ra giá trị để kiểm tra
-                                                          print(
-                                                              'Salary text: "${salaryController.text}"');
-                                                          final rawSalary =
-                                                              CurrencyInputFormatter
-                                                                  .getRawValue(
-                                                                      salaryController
-                                                                          .text);
-                                                          print(
-                                                              'Raw salary: $rawSalary');
+                                              ),
 
-                                                          final contract =
-                                                              ContractModel(
-                                                            salary: rawSalary
-                                                                .toInt(),
-                                                            contractCode:
-                                                                codeContractController
-                                                                    .text
-                                                                    .trim(),
-                                                            employeeId:
-                                                                selectPersonalId,
-                                                            contractType:
-                                                                contractTypeController
-                                                                    .text
-                                                                    .trim(),
-                                                            description:
-                                                                descriptionController
-                                                                    .text
-                                                                    .trim(),
-                                                            status:
-                                                                statusController
-                                                                    .text
-                                                                    .trim(),
-                                                            startDate:
-                                                                dateFormat.parse(
-                                                                    startDateController
-                                                                        .text),
-                                                            endDate: dateFormat
-                                                                .parse(
-                                                                    endDateController
-                                                                        .text),
-                                                            employeeName: persionals
-                                                                .firstWhere(
-                                                                    (personal) =>
-                                                                        personal
-                                                                            .id ==
-                                                                        selectPersonalId)
-                                                                .name,
-                                                          );
+                                              /// Khoảng cách
+                                              const Gap(TSizes.spaceBtwItems),
 
-                                                          // Process data
-                                                          context
-                                                              .read<
-                                                                  ContractBloc>()
-                                                              .add(CreateContract(
-                                                                  contract));
-                                                        }
-                                                      },
-                                                      child: Text(
-                                                        'Thêm hợp đồng',
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyMedium!
-                                                            .copyWith(
-                                                                color: Colors
-                                                                    .white),
-                                                      )),
+                                              /// Ngày kết thúc
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  DateTime? pickedDate =
+                                                      await showDatePicker(
+                                                    context: context,
+                                                    initialDate: DateTime.now(),
+                                                    firstDate: DateTime(1900),
+                                                    lastDate: DateTime(2100),
+                                                  );
+                                                  if (pickedDate != null) {
+                                                    String formattedDate =
+                                                        "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                                                    endDateController.text =
+                                                        formattedDate;
+                                                  }
+                                                },
+                                                child: AbsorbPointer(
+                                                  child: TTextFormField(
+                                                    textAlign: true,
+                                                    text: 'Ngày kết thúc',
+                                                    hint: 'Chọn ngày kết thúc',
+                                                    controller:
+                                                        endDateController,
+                                                  ),
                                                 ),
-                                              ],
-                                            ),
-                                          ],
-                                        ))
-                                  ],
-                                )),
+                                              ),
+
+                                              const Gap(TSizes.spaceBtwItems),
+                                              TDropDownMenu(
+                                                  menus: const [
+                                                    'Hoạt động',
+                                                    'Đã kết thúc',
+                                                  ],
+                                                  text: 'Trạng thái:',
+                                                  controller: statusController),
+
+                                              const Gap(
+                                                  TSizes.spaceBtwSections),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: TextButton(
+                                                        style: TextButton.styleFrom(
+                                                            backgroundColor:
+                                                                Colors.red,
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        TSizes.defaultSpace *
+                                                                            2,
+                                                                    vertical:
+                                                                        16)),
+                                                        onPressed: () {
+                                                          context.go(RouterName
+                                                              .contractPage);
+                                                        },
+                                                        child: Text(
+                                                          'Hủy',
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyMedium!
+                                                              .copyWith(
+                                                                  color: Colors
+                                                                      .white),
+                                                        )),
+                                                  ),
+                                                  const Gap(
+                                                      TSizes.defaultSpace),
+                                                  Expanded(
+                                                    child: TextButton(
+                                                        style: TextButton.styleFrom(
+                                                            backgroundColor:
+                                                                Colors.blue,
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        TSizes.defaultSpace *
+                                                                            2,
+                                                                    vertical:
+                                                                        16)),
+                                                        onPressed: () {
+                                                          // Handle form submission
+                                                          if (_globalKey
+                                                              .currentState!
+                                                              .validate()) {
+                                                            // Debug: In ra giá trị để kiểm tra
+                                                            print(
+                                                                'Salary text: "${salaryController.text}"');
+                                                            final rawSalary =
+                                                                CurrencyInputFormatter
+                                                                    .getRawValue(
+                                                                        salaryController
+                                                                            .text);
+                                                            print(
+                                                                'Raw salary: $rawSalary');
+
+                                                            final contract =
+                                                                ContractModel(
+                                                              salary: rawSalary
+                                                                  .toInt(),
+                                                              contractCode:
+                                                                  codeContractController
+                                                                      .text
+                                                                      .trim(),
+                                                              employeeId:
+                                                                  selectPersonalId,
+                                                              contractType:
+                                                                  contractTypeController
+                                                                      .text
+                                                                      .trim(),
+                                                              description:
+                                                                  descriptionController
+                                                                      .text
+                                                                      .trim(),
+                                                              status:
+                                                                  statusController
+                                                                      .text
+                                                                      .trim(),
+                                                              startDate:
+                                                                  dateFormat.parse(
+                                                                      startDateController
+                                                                          .text),
+                                                              endDate: dateFormat
+                                                                  .parse(
+                                                                      endDateController
+                                                                          .text),
+                                                              employeeName: persionals
+                                                                  .firstWhere((personal) =>
+                                                                      personal
+                                                                          .id ==
+                                                                      selectPersonalId)
+                                                                  .name,
+                                                            );
+
+                                                            // Process data
+                                                            context
+                                                                .read<
+                                                                    ContractBloc>()
+                                                                .add(CreateContract(
+                                                                    contract));
+                                                          }
+                                                        },
+                                                        child: Text(
+                                                          'Thêm hợp đồng',
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyMedium!
+                                                              .copyWith(
+                                                                  color: Colors
+                                                                      .white),
+                                                        )),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ))
+                                    ],
+                                  )),
+                            ),
                           ],
                         ),
                       ),

@@ -26,17 +26,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  if (kIsWeb) {
-    // For web, pass a temporary directory
-    HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: await getTemporaryDirectory(),
-    );
-  } else {
-    final storageDirectory = await getTemporaryDirectory();
-    HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: storageDirectory,
-    );
-  }
+
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: kIsWeb
+        ? HydratedStorageDirectory.web
+        : HydratedStorageDirectory((await getTemporaryDirectory()).path),
+  );
 
   dependencyInjector.servicesLocator();
   await Hive.openBox(GlobalStorageKey.globalStorage);

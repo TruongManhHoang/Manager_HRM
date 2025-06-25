@@ -510,14 +510,14 @@ class AppRouter {
                 },
                 routes: [
                   GoRoute(
-                    path: 'add-salary', // Nested route
+                    path: 'add-salary',
                     name: RouterName.addSalary,
                     builder: (context, state) {
                       return AddSalaryPage();
                     },
                   ),
                   GoRoute(
-                    path: 'edit-salary', // Nested route
+                    path: 'edit-salary',
                     name: RouterName.editSalary,
                     builder: (context, state) {
                       final salary = state.extra as SalaryModel;

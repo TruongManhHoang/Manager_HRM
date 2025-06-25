@@ -136,7 +136,7 @@ class DashBoardDesktopPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Tổng quan hệ thống',
+                              Text('Tổng quan phòng ban',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyLarge!

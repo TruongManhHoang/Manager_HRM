@@ -39,6 +39,8 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
   final codeController = TextEditingController();
   final statusController = TextEditingController();
   final avatarController = TextEditingController();
+  late String positionName = '';
+  late String departmentName = '';
 
   final educationLevels = ['Cao đẳng', 'Đại học', 'Sau đại học'];
   @override
@@ -54,6 +56,9 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
     addressController.text = widget.employee.address;
     birthDateController.text = widget.employee.dateOfBirth;
     statusController.text = widget.employee.status.toString();
+    positionName = widget.employee.positionName!;
+    departmentName = widget.employee.departmentName!;
+
     super.initState();
   }
 
@@ -215,6 +220,10 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                                                 .toList(),
                                             onSelected: (value) {
                                               selectedPositionId = value;
+                                              positionName = positions
+                                                  .firstWhere(
+                                                      (p) => p.id == value)
+                                                  .name!;
                                             },
                                             hintText: 'Chọn chức vụ',
                                           ),
@@ -257,6 +266,10 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                                                 .toList(),
                                             onSelected: (value) {
                                               selectedDepartmentId = value;
+                                              departmentName = departments
+                                                  .firstWhere(
+                                                      (d) => d.id == value)
+                                                  .name;
                                             },
                                             hintText: 'Chọn phòng ban',
                                           ),
@@ -366,12 +379,10 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                                                       createdAt: widget
                                                           .employee.createdAt,
                                                       updatedAt: DateTime.now(),
-                                                      positionName: widget
-                                                          .employee
-                                                          .positionName,
-                                                      departmentName: widget
-                                                          .employee
-                                                          .departmentName);
+                                                      positionName:
+                                                          positionName,
+                                                      departmentName:
+                                                          departmentName);
                                                   context
                                                       .read<PersionalBloc>()
                                                       .add(PersionalUpdateEvent(

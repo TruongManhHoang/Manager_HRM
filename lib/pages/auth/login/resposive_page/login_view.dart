@@ -98,15 +98,15 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       //forgot password
                       const SizedBox(height: 10),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            context.go(RouterName.forgotPassword);
-                          },
-                          child: const Text("Quên mật khẩu?"),
-                        ),
-                      ),
+                      // Align(
+                      //   alignment: Alignment.centerRight,
+                      //   child: TextButton(
+                      //     onPressed: () {
+                      //       context.go(RouterName.forgotPassword);
+                      //     },
+                      //     child: const Text("Quên mật khẩu?"),
+                      //   ),
+                      // ),
                       const SizedBox(height: 25),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(

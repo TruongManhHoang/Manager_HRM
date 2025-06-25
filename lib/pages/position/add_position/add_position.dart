@@ -102,9 +102,10 @@ class AddPosition extends StatelessWidget {
                                             const Gap(TSizes.spaceBtwItems),
                                             TDropDownMenu(
                                                 menus: const [
+                                                  'Giám đốc',
                                                   'Nhân viên',
                                                   'Quản lý',
-                                                  'Giám đốc',
+                                                  'Kế toán'
                                                 ],
                                                 controller:
                                                     positionTypeController,

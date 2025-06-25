@@ -25,10 +25,6 @@ class DepartmentPageDesktop extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const TBreadcrumsWithHeading(
-                heading: 'Phòng Ban',
-                breadcrumbItems: [],
-              ),
               const Row(
                 children: [
                   Text(

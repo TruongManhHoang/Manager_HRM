@@ -64,18 +64,18 @@ class ContractPageDesktop extends StatelessWidget {
                                   .copyWith(color: Colors.white),
                             )),
                         const Gap(10),
-                        TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                            ),
-                            onPressed: () {},
-                            child: Text(
-                              'Hiện hợp đồng đã ngừng hoạt động',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(color: Colors.white),
-                            )),
+                        // TextButton(
+                        //     style: TextButton.styleFrom(
+                        //       backgroundColor: Colors.blue,
+                        //     ),
+                        //     onPressed: () {},
+                        //     child: Text(
+                        //       'Hiện hợp đồng đã ngừng hoạt động',
+                        //       style: Theme.of(context)
+                        //           .textTheme
+                        //           .bodyMedium!
+                        //           .copyWith(color: Colors.white),
+                        //     )),
                       ],
                     ),
                     const DataTableContract()
